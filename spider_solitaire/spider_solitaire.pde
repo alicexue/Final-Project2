@@ -3,7 +3,7 @@ import java.util.Collections;
 
 LL[] tableaus;
 ArrayList<Node> stock;
-Node[] cards = new Node[104]; //(spades) 
+Node[] cards = new Node[104]; 
 ArrayList<Integer> list = new ArrayList<Integer>(); // random ints to 104
 int listPos; 
 
@@ -99,27 +99,107 @@ void setupGame() {
   for (int i = 0; i < tableaus.length; i++) {
     tableaus[i].getLast().setFace(true);
   }
-  
 }
 
-// when player clicks stock, new cards are added to them
-//void addFromStock() {
-//}
+// when player clicks stock, new cards are added to the tableaus
+void addFromStock() {
+  int pos = 0;
+  for (int i = 0; i < tableaus.length; i++) {
+     LL l = tableaus[i];
+     Node n = stock.get(pos);
+     n.setFace(true);
+     l.add(n);
+     stock.remove(pos);
+     pos++;
+  }
+}
 
+// checks that the cards in this tableau from n are same suit
+boolean sameSuit(Node n) {
+  Node tmp = n;
+  while (tmp != null) {
+    if (tmp.getSuit() != tmp.getNext().getSuit()) {
+      return false;
+    }
+    tmp = tmp.getNext();
+  }
+  return true;
+}
+
+// checks if face up columns are complete
+// returns -1 if no tableaus are complete
+// returns index of tableau if there is one complete
+int completeTableau() {
+  int tableauIndex = -1;
+  for (int i = 0; i < tableaus.length; i++) {
+    Node tmp = tableaus[i].getFirst();
+    while (tmp != null) {
+      if (tmp.faceUp() == true) {
+         if (sameSuit(tmp) == true) {
+            tableauIndex = i;
+         }
+      }
+      if (tableauIndex != -1) 
+        break;
+    }
+  }
+  return tableauIndex;
+}
+
+// verifies if suit of card 1 is greater than suit of card 2
+boolean checkSuit(Node card1, Node card2) {
+  char s1 = card1.getSuit();
+  char s2 = card2.getSuit();
+  boolean result = false;
+  if (s1 == 'S') {
+    result = true;
+  } else if (s1 == 'H' && s2!= 'S') { 
+    result = true;
+  } else if (s1 == 'D' && s2 != 'S' && s2 != 'H') {
+    result = true;
+  } else if (s1 == 'C' && s2 != 'S' && s2 != 'H' && s2 != 'D') {
+    result = true;
+  }
+  return result;
+}  
+
+// returns true if suit of card1 is greater than suit of card2
+// card2 is being moved on top of card1
+// still need to check if this is correct
+boolean validSuitMove(Node card1, Node card2) {
+  if (card1.getNext()==null)
+    return validMultipleMove(card2);
+  else if (checkSuit(card1, card2))
+    return true;
+  return false;
+}  
+
+// checks if multiple cards can be moved
+boolean validMultipleMove(Node card) {
+  Node tmp = card;
+  while (tmp != null) {
+    if (tmp.getSuit() != tmp.getNext().getSuit()) {
+      return false;
+    }
+    tmp = tmp.getNext();
+  }
+  return true;
+}
+  
 class Node {
   int value;
   char suit; 
   boolean up;
   Node next;
   
-  Node (int v, char s) {
+  Node(int v, char s) {
     value = v;
     suit = s;
     up = false;
     next = null;
   }
   
-  void setFace (boolean up1) {
+  void setFace(boolean up1) {
      if (up1) 
       up = true;
      else 
@@ -132,6 +212,10 @@ class Node {
   
   char getSuit() {
     return suit;
+  }
+  
+  boolean faceUp() {
+    return up;
   }
     
   void setNext(Node n) {
@@ -163,6 +247,10 @@ class LL {
   boolean remove() {
     return true;
   }
+    
+  Node getFirst() {
+    return l;
+  }  
     
   Node getLast() {
     Node tmp = l;
