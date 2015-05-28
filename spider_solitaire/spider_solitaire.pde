@@ -30,6 +30,49 @@ int listPos;
 // intermediate: two suits (spades and hearts)
 // difficult: four suits
 
+
+
+int instX, instY;
+int startX, startY;
+color instC, startC;
+int instH, instL;
+int startH, startL;
+boolean inst = false;
+boolean start = false;
+
+void setup() {
+  size(1500, 800);
+  background(0);
+  textSize(200);
+  text("SOLITAIRE", 356, 325);
+  textSize(75);
+  text("By Alice Xue & Emily Xu", 250, 700);
+  
+  //instructions & start buttons
+  instC = color(255,0,0);
+  instX = 500;
+  instY = 500;
+  instL = 200;
+  instH = 50;
+  rect(instX, instY, instL, instH);
+  textSize(20);
+  text("Instructions", 500, 500);
+  
+  startC = color(255,0,0);
+  startX = 700;
+  startY = 500;
+  startL = 200;
+  startH = 50;
+  rect(startX, startY, startL, startH);
+  textSize(20);
+  text("Start", 700, 500);
+  
+}
+
+void draw() {
+  //update (mouseX, mouseY);
+}
+
 void makeDeck(int startpos, char s1, char s2, char s3, char s4) {
   int pos = startpos;
   for (int i = 0; i < 13; i++ ) {
