@@ -34,11 +34,18 @@ int listPos;
 
 int instX, instY;
 int startX, startY;
-color instC, startC;
+int menuX, menuY;
+color instC, startC, menuC;
 int instH, instL;
 int startH, startL;
+int menuH, menuL;
 boolean inst = false;
 boolean start = false;
+boolean menu = false;
+
+boolean rect1Over = false;
+boolean rect2Over = false;
+boolean rect3Over = false;
 
 void setup() {
   size(1500, 800);
@@ -67,11 +74,88 @@ void setup() {
   textSize(20);
   text("Start", 700, 500);
   
+  
+  
 }
 
 void draw() {
-  //update (mouseX, mouseY);
+  update (mouseX, mouseY);
+  if (inst == true) {
+    background(0);
+    textSize(20);
+    text("Instructions", 800, 300);
+    menuC = color(255,0,0);
+    menuX = 700;
+    menuY = 500;
+    menuL = 200;
+    menuH = 50;
+    rect(menuX, menuY, menuL, menuH);
+    textSize(20);
+    text("Go back to the menu", 700, 500);
+  }
+  if (start == true) {
+    background(0);
+    textSize(20);
+    text("Start!", 800, 300);
+    menuC = color(255,0,0);
+    menuX = 700;
+    menuY = 500;
+    menuL = 200;
+    menuH = 50;
+    rect(menuX, menuY, menuL, menuH);
+    textSize(20);
+    text("Go back to the menu", 700, 500);
+  }
+  if (menu == true) {
+    setup();
+  }
 }
+
+void update(int x, int y) {
+  if (overRect(instX, instY, instL, instH)) {
+    rect1Over = true;
+    rect2Over = false;
+    rect3Over = false;
+  } else if (overRect(startX, startY, startL, startH)) {
+    rect1Over = false;
+    rect2Over = true;
+    rect3Over = false;
+  } else if (overRect(menuX, menuY, menuL, menuH)) {
+    rect3Over = true;
+    rect1Over = false;
+    rect2Over = false;
+  }
+}
+
+boolean overRect(int x, int y, int w, int h) {
+  if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h) {
+    return true;
+  }
+  return false;
+}
+
+void mousePressed(){
+  if (rect1Over == true){
+    start = false;
+    inst = true;
+    menu = false;
+  }
+  if (rect2Over == true) {
+    inst = false;
+    start = true;
+    menu = false;
+  }
+  if (rect3Over == true) {
+    menu = true;
+    inst = false;
+    start = false;
+  }
+}
+
+
+
+
+
 
 void makeDeck(int startpos, char s1, char s2, char s3, char s4) {
   int pos = startpos;
