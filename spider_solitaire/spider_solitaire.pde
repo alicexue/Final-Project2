@@ -34,20 +34,27 @@ int listPos;
 
 int instX, instY;
 int startX, startY;
-int menuX, menuY;
-color instC, startC, menuC;
+int menuX, menuY, menuX2, menuY2;
+color instC, startC, menuC, menuC2;
 int instH, instL;
 int startH, startL;
-int menuH, menuL;
+int menuH, menuL, menuH2, menuL2;
 boolean inst = false;
 boolean start = false;
-boolean menu = false;
+boolean menuI = false;
+boolean menuS = false;
 
 boolean rect1Over = false;
 boolean rect2Over = false;
 boolean rect3Over = false;
+boolean rect4Over = false;
 
 void setup() {
+  setup1(); 
+  
+}
+
+void setup1() {
   size(1500, 800);
   background(0);
   textSize(200);
@@ -72,10 +79,7 @@ void setup() {
   startH = 50;
   rect(startX, startY, startL, startH);
   textSize(20);
-  text("Start", 700, 500);
-  
-  
-  
+  text("Start", 700, 500); 
 }
 
 void draw() {
@@ -96,35 +100,47 @@ void draw() {
   if (start == true) {
     background(0);
     textSize(20);
-    text("Start!", 800, 300);
-    menuC = color(255,0,0);
-    menuX = 700;
-    menuY = 500;
-    menuL = 200;
-    menuH = 50;
-    rect(menuX, menuY, menuL, menuH);
+    text("Start", 800, 300);
+    menuC2 = color(255,0,0);
+    menuX2 = 700;
+    menuY2 = 500;
+    menuL2 = 200;
+    menuH2 = 50;
+    rect(menuX2, menuY2, menuL2, menuH2);
     textSize(20);
     text("Go back to the menu", 700, 500);
   }
-  if (menu == true) {
-    setup();
+  if (menu1 == true || menu2 == true) {
+    setup1();
+
   }
 }
+
 
 void update(int x, int y) {
   if (overRect(instX, instY, instL, instH)) {
     rect1Over = true;
     rect2Over = false;
     rect3Over = false;
-  } else if (overRect(startX, startY, startL, startH)) {
+    rect4Over = false;
+  }
+  if (overRect(startX, startY, startL, startH)) {
     rect1Over = false;
     rect2Over = true;
     rect3Over = false;
-  } else if (overRect(menuX, menuY, menuL, menuH)) {
-    rect3Over = true;
+    rect4Over = false;
+  }
+  if (overRect(menuX, menuY, menuL, menuH)) {
     rect1Over = false;
     rect2Over = false;
+    rect3Over = true;
+    rect4Over = false;
   }
+  if (overRect(menuX2, menuY2, menuL2, menuH2)) {
+    rect1Over = false;
+    rect2Over = false;
+    rect3Over = false;
+    rect4Over = true;
 }
 
 boolean overRect(int x, int y, int w, int h) {
@@ -134,7 +150,7 @@ boolean overRect(int x, int y, int w, int h) {
   return false;
 }
 
-void mousePressed(){
+void mousePressed(){ //didnt finish *******************************
   if (rect1Over == true){
     start = false;
     inst = true;
