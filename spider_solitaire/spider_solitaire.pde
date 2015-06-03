@@ -1,3 +1,8 @@
+// need to fix "go back to menu" function
+
+//http://www.rgbhex.com/  COLORS
+
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -34,24 +39,31 @@ int listPos;
 
 int instX, instY;
 int startX, startY;
-int menuX, menuY, menuX2, menuY2;
-color instC, startC, menuC, menuC2;
+int menuX, menuY;
+color instC, startC, menuC;
 int instH, instL;
 int startH, startL;
-int menuH, menuL, menuH2, menuL2;
+int menuH, menuL;
+
+int circle1X, circle1Y;
+int circle1Size;
+color circle1C;
+
 boolean inst = false;
 boolean start = false;
 boolean menuI = false;
 boolean menuS = false;
+boolean circle1 = false;
 
 boolean rect1Over = false;
 boolean rect2Over = false;
 boolean rect3Over = false;
 boolean rect4Over = false;
+// play button
+boolean circle1Over = false;
 
 void setup() {
-  setup1(); 
-  
+  setup1();   
 }
 
 void setup1() {
@@ -96,23 +108,36 @@ void draw() {
     rect(menuX, menuY, menuL, menuH);
     textSize(20);
     text("Go back to the menu", 700, 500);
+    menuI = false;
+    menuS = false;
   }
   if (start == true) {
     background(0);
     textSize(20);
     text("Start", 800, 300);
-    menuC2 = color(255,0,0);
-    menuX2 = 700;
-    menuY2 = 500;
-    menuL2 = 200;
-    menuH2 = 50;
-    rect(menuX2, menuY2, menuL2, menuH2);
+    circle1C = color(255,0,0);
+    circle1X = 700;
+    circle1Y = 400;
+    circle1Size = 100;
+    ellipse(circle1X, circle1Y, circle1Size, circle1Size);
+    textSize(20);
+    text("PLAY!",600,400);
+    menuC = color(255,0,0);
+    menuX = 700;
+    menuY = 500;
+    menuL = 200;
+    menuH = 50;
+    rect(menuX, menuY, menuL, menuH);
     textSize(20);
     text("Go back to the menu", 700, 500);
+    menuI = false;
+    menuS = false;
   }
-  if (menu1 == true || menu2 == true) {
+  if (menuI == true || menuS== true) {
     setup1();
-
+  }
+  if (circle1 == true) {
+    background(107);
   }
 }
 
@@ -136,11 +161,21 @@ void update(int x, int y) {
     rect3Over = true;
     rect4Over = false;
   }
-  if (overRect(menuX2, menuY2, menuL2, menuH2)) {
+  /*
+  if (overRect(menuX, menuY, menuL, menuH)) {
     rect1Over = false;
     rect2Over = false;
     rect3Over = false;
     rect4Over = true;
+  }
+  */
+  if (overCircle(circle1X, circle1Y, circle1Size)) {
+    rect1Over = false;
+    rect2Over = false;
+    rect3Over = false;
+    rect4Over = false;
+    circle1Over = true;    
+  }
 }
 
 boolean overRect(int x, int y, int w, int h) {
@@ -150,21 +185,47 @@ boolean overRect(int x, int y, int w, int h) {
   return false;
 }
 
-void mousePressed(){ //didnt finish *******************************
+boolean overCircle(int x, int y, int diameter){
+  float disX = x - mouseX;
+  float disY = y - mouseY;
+  if (sqrt(sq(disX) + sq(disY)) < diameter/2 ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void mousePressed(){ 
   if (rect1Over == true){
     start = false;
     inst = true;
-    menu = false;
+    menuI = false;
+    menuS = false;
   }
   if (rect2Over == true) {
     inst = false;
     start = true;
-    menu = false;
+    menuI = false;
+    menuS = false;
   }
   if (rect3Over == true) {
-    menu = true;
+    menuI = true;
     inst = false;
     start = false;
+    menuS = false;
+  }
+  if (rect4Over == true) {
+    inst = false;
+    start = false;
+    menuI = false;
+    menuS = true;
+  }
+  if (circle1Over == true) {
+    inst = false;
+    start = false;
+    menuI = false;
+    menuS = false;
+    circle1 = true;
   }
 }
 
