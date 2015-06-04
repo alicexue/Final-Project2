@@ -1,7 +1,6 @@
 // need to fix "go back to menu" function
-
+// card images https://code.google.com/p/vector-playing-cards/
 //http://www.rgbhex.com/  COLORS
-
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,22 +44,22 @@ int instH, instL;
 int startH, startL;
 int menuH, menuL;
 
-int circle1X, circle1Y;
-int circle1Size;
-color circle1C;
+int circlePlayX, circlePlayY;
+int circlePlaySize;
+color circlePlayC;
 
 boolean inst = false;
 boolean start = false;
 boolean menuI = false;
 boolean menuS = false;
-boolean circle1 = false;
+boolean circlePlay = false;
 
-boolean rect1Over = false;
-boolean rect2Over = false;
-boolean rect3Over = false;
-boolean rect4Over = false;
+boolean rectInstOver = false;
+boolean rectStartOver = false;
+boolean rectMenuSOver = false;
+boolean rectMenuIOver = false;
 // play button
-boolean circle1Over = false;
+boolean circlePlayOver = false;
 
 void setup() {
   setup1();   
@@ -68,11 +67,13 @@ void setup() {
 
 void setup1() {
   size(1500, 800);
-  background(0);
+  background(0,0,102);
   textSize(200);
-  text("SOLITAIRE", 356, 325);
+  textAlign(CENTER);
+  text("SOLITAIRE", 750, 325);
+  textAlign(CENTER);
   textSize(75);
-  text("By Alice Xue & Emily Xu", 250, 700);
+  text("By Alice Xue & Emily Xu", 750, 700);
   
   //instructions & start buttons
   instC = color(255,0,0);
@@ -82,6 +83,7 @@ void setup1() {
   instH = 50;
   rect(instX, instY, instL, instH);
   textSize(20);
+  textAlign(LEFT);
   text("Instructions", 500, 500);
   
   startC = color(255,0,0);
@@ -91,15 +93,18 @@ void setup1() {
   startH = 50;
   rect(startX, startY, startL, startH);
   textSize(20);
+  textAlign(LEFT);
   text("Start", 700, 500); 
 }
 
 void draw() {
-  update (mouseX, mouseY);
+  update(mouseX, mouseY);
   if (inst == true) {
-    background(0);
+    //resetBooleans();
+    inst = true;
+    background(0,0,102);
     textSize(20);
-    text("Instructions", 800, 300);
+    text("Instructions", 700, 300);
     menuC = color(255,0,0);
     menuX = 700;
     menuY = 500;
@@ -108,18 +113,18 @@ void draw() {
     rect(menuX, menuY, menuL, menuH);
     textSize(20);
     text("Go back to the menu", 700, 500);
-    menuI = false;
-    menuS = false;
   }
   if (start == true) {
-    background(0);
+    //resetBooleans();
+    start = true;
+    background(0,0,102);
     textSize(20);
-    text("Start", 800, 300);
-    circle1C = color(255,0,0);
-    circle1X = 700;
-    circle1Y = 400;
-    circle1Size = 100;
-    ellipse(circle1X, circle1Y, circle1Size, circle1Size);
+    text("Start", 700, 300);
+    circlePlayC = color(255,0,0);
+    circlePlayX = 700;
+    circlePlayY = 400;
+    circlePlaySize = 100;
+    ellipse(circlePlayX, circlePlayY, circlePlaySize, circlePlaySize);
     textSize(20);
     text("PLAY!",600,400);
     menuC = color(255,0,0);
@@ -130,51 +135,61 @@ void draw() {
     rect(menuX, menuY, menuL, menuH);
     textSize(20);
     text("Go back to the menu", 700, 500);
-    menuI = false;
-    menuS = false;
   }
-  if (menuI == true || menuS== true) {
+  if (menuI == true) {
+    //resetBooleans();
+    menuI = true;
     setup1();
   }
-  if (circle1 == true) {
-    background(107);
+  if (menuS == true) {
+    //resetBooleans();
+    menuS = true;
+    setup1();
+  }
+  if (circlePlay == true) {
+    resetBooleans();
+    circlePlayOver = true;
+    background(51,153,0);
+   
   }
 }
 
+void resetBooleans() {
+    start = false;
+    inst = false;
+    menuI = false;
+    menuS = false;
+    circlePlay = false;
+}
+
+void resetBooleans2() {
+    rectInstOver = false;
+    rectStartOver = false;
+    rectMenuSOver = false;
+    rectMenuIOver = false;
+    circlePlayOver = false;  
+}
 
 void update(int x, int y) {
   if (overRect(instX, instY, instL, instH)) {
-    rect1Over = true;
-    rect2Over = false;
-    rect3Over = false;
-    rect4Over = false;
+    resetBooleans2();
+    rectInstOver = true;
   }
   if (overRect(startX, startY, startL, startH)) {
-    rect1Over = false;
-    rect2Over = true;
-    rect3Over = false;
-    rect4Over = false;
+    resetBooleans2();
+    rectStartOver = true;
   }
-  if (overRect(menuX, menuY, menuL, menuH)) {
-    rect1Over = false;
-    rect2Over = false;
-    rect3Over = true;
-    rect4Over = false;
+  if (start == true && overRect(menuX, menuY, menuL, menuH)) {
+    resetBooleans2();
+    rectMenuSOver = true;
   }
-  /*
-  if (overRect(menuX, menuY, menuL, menuH)) {
-    rect1Over = false;
-    rect2Over = false;
-    rect3Over = false;
-    rect4Over = true;
+  if (inst == true && overRect(menuX, menuY, menuL, menuH)) {
+    resetBooleans2();
+    rectMenuIOver = true;
   }
-  */
-  if (overCircle(circle1X, circle1Y, circle1Size)) {
-    rect1Over = false;
-    rect2Over = false;
-    rect3Over = false;
-    rect4Over = false;
-    circle1Over = true;    
+  if (overCircle(circlePlayX, circlePlayY, circlePlaySize)) {
+    resetBooleans2();
+    circlePlayOver = true;    
   }
 }
 
@@ -188,7 +203,7 @@ boolean overRect(int x, int y, int w, int h) {
 boolean overCircle(int x, int y, int diameter){
   float disX = x - mouseX;
   float disY = y - mouseY;
-  if (sqrt(sq(disX) + sq(disY)) < diameter/2 ) {
+  if (sqrt(sq(disX) + sq(disY)) < diameter/2) {
     return true;
   } else {
     return false;
@@ -196,37 +211,32 @@ boolean overCircle(int x, int y, int diameter){
 }
 
 void mousePressed(){ 
-  if (rect1Over == true){
-    start = false;
+  if (rectInstOver == true){
+    resetBooleans();
     inst = true;
-    menuI = false;
-    menuS = false;
   }
-  if (rect2Over == true) {
-    inst = false;
+  if (rectStartOver == true) {
+    resetBooleans();
     start = true;
-    menuI = false;
-    menuS = false;
   }
-  if (rect3Over == true) {
-    menuI = true;
-    inst = false;
-    start = false;
-    menuS = false;
-  }
-  if (rect4Over == true) {
-    inst = false;
-    start = false;
-    menuI = false;
+  if (rectMenuSOver == true) {
+    resetBooleans();
     menuS = true;
   }
-  if (circle1Over == true) {
-    inst = false;
-    start = false;
-    menuI = false;
-    menuS = false;
-    circle1 = true;
+  if (rectMenuIOver == true) {
+    resetBooleans();
+    menuI = true;
   }
+  if (circlePlayOver == true) {
+    resetBooleans();
+    circlePlay = true;
+  }
+}
+
+
+void setupPlay() {
+  setupGame();
+  // print cards for the setup
 }
 
 
@@ -234,29 +244,19 @@ void mousePressed(){
 
 
 
-void makeDeck(int startpos, char s1, char s2, char s3, char s4) {
+void makeDeck(int startpos) {
   int pos = startpos;
   for (int i = 0; i < 13; i++ ) {
-    cards[pos] = new Node(i+1, s1);
-    cards[pos+13] = new Node(i+1, s2);
-    cards[pos+26] = new Node(i+1, s3);
-    cards[pos+39] = new Node(i+1, s4);
+    cards[pos] = new Node(i+1);
+    cards[pos+13] = new Node(i+1);
+    cards[pos+26] = new Node(i+1);
+    cards[pos+39] = new Node(i+1);
   }
 }
 
 void easy() {
-  makeDeck(0, 'S', 'S', 'S', 'S');
-  makeDeck(52, 'S', 'S', 'S', 'S');
-}
-
-void medium() {
-  makeDeck(0, 'S', 'S', 'S', 'S');
-  makeDeck(52, 'H', 'H', 'H', 'H');
-}
-
-void difficult() {
-  makeDeck(0, 'S', 'H', 'D', 'C');
-  makeDeck(52, 'S', 'H', 'D', 'C');
+  makeDeck(0);
+  makeDeck(52);
 }
 
 void randomgenerator() {
@@ -318,17 +318,6 @@ void addFromStock() {
   }
 }
 
-// checks that the cards in this tableau from n are same suit
-boolean sameSuit(Node n) {
-  Node tmp = n;
-  while (tmp != null) {
-    if (tmp.getSuit() != tmp.getNext().getSuit()) {
-      return false;
-    }
-    tmp = tmp.getNext();
-  }
-  return true;
-}
 
 // checks if face up columns are complete
 // returns -1 if no tableaus are complete
@@ -339,9 +328,7 @@ int completeTableau() {
     Node tmp = tableaus[i].getFirst();
     while (tmp != null) {
       if (tmp.faceUp() == true) {
-         if (sameSuit(tmp) == true) {
-            tableauIndex = i;
-         }
+         tableauIndex = i;
       }
       if (tableauIndex != -1) 
         break;
@@ -350,55 +337,32 @@ int completeTableau() {
   return tableauIndex;
 }
 
-// verifies if suit of card 1 is greater than suit of card 2
-boolean checkSuit(Node card1, Node card2) {
-  char s1 = card1.getSuit();
-  char s2 = card2.getSuit();
-  boolean result = false;
-  if (s1 == 'S') {
-    result = true;
-  } else if (s1 == 'H' && s2!= 'S') { 
-    result = true;
-  } else if (s1 == 'D' && s2 != 'S' && s2 != 'H') {
-    result = true;
-  } else if (s1 == 'C' && s2 != 'S' && s2 != 'H' && s2 != 'D') {
-    result = true;
-  }
-  return result;
-}  
-
-// returns true if suit of card1 is greater than suit of card2
-// card2 is being moved on top of card1
-// still need to check if this is correct
-boolean validSuitMove(Node card1, Node card2) {
-  if (card1.getNext()==null)
-    return validMultipleMove(card2);
-  else if (checkSuit(card1, card2))
-    return true;
-  return false;
-}  
 
 // checks if multiple cards can be moved
 boolean validMultipleMove(Node card) {
   Node tmp = card;
-  while (tmp != null) {
-    if (tmp.getSuit() != tmp.getNext().getSuit()) {
+  Node tmp2 = card.getNext();
+  while (tmp2 != null) {
+    if (tmp2.getValue() >= tmp.getValue()) {
+      return false;
+    }
+    if (tmp.getValue()-tmp2.getValue()>1) {
       return false;
     }
     tmp = tmp.getNext();
+    tmp2 = tmp.getNext();
   }
   return true;
 }
   
 class Node {
   int value;
-  char suit; 
   boolean up;
   Node next;
+  PImage card;
   
-  Node(int v, char s) {
+  Node(int v) {
     value = v;
-    suit = s;
     up = false;
     next = null;
   }
@@ -414,10 +378,6 @@ class Node {
     return value;
   }
   
-  char getSuit() {
-    return suit;
-  }
-  
   boolean faceUp() {
     return up;
   }
@@ -429,6 +389,12 @@ class Node {
   Node getNext() {
     return next;
   }
+  
+  void setImage() {
+    String s = Integer.toString(value);
+    card = loadImage(s+".png");
+  }
+  
 }
   
 class LL {
