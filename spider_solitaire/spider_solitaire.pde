@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 LL[] tableaus;
-ArrayList<Node> stock;
+ArrayList<Node> stock = new ArrayList<Node>();
 Node[] cards = new Node[104]; 
 ArrayList<Integer> list = new ArrayList<Integer>(); // random ints to 104
-int listPos; 
+int listPos = 0; 
 
 // for the initial setup
 // the tableaus will be in an array
@@ -127,6 +127,7 @@ void draw() {
     ellipse(circlePlayX, circlePlayY, circlePlaySize, circlePlaySize);
     textSize(20);
     text("PLAY!",600,400);
+    text("If you press play, please wait as spiders set up your game :)", 300, 200);
     menuC = color(255,0,0);
     menuX = 700;
     menuY = 500;
@@ -150,6 +151,7 @@ void draw() {
     resetBooleans();
     circlePlayOver = true;
     background(51,153,0);
+    setupPlay();  
    
   }
 }
@@ -236,8 +238,19 @@ void mousePressed(){
 
 void setupPlay() {
   setupGame();
-  // print cards for the setup
+  int posY = 50;
+  for (int i = 0; i<tableaus.length; i++) {
+    Node tmp = tableaus[i].getFirst();
+    while (tmp != null) {
+      image(tmp.getCard(),(i+10)*10,posY);
+      tmp = tmp.getNext();
+      posY=posY+100;
+    }
+  }
+  
 }
+
+
 
 
 
@@ -275,34 +288,44 @@ int UQint() {
 }
 
 void setupGame() {
+  easy();
+  randomgenerator();
   // this sets up the tableaus with random cards
   tableaus = new LL[10];
-  int pos = 0;
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < tableaus.length; i++) {
     tableaus[i] = new LL(cards[UQint()]);
-    pos++;
     if (i < 4) {
-      for (int j = 0; j < 6; i++) {
-        tableaus[i].add(cards[UQint()]);
-        pos++;
+      for (int j = 1; j < 6; j++) {
+        Node tmp = cards[UQint()];
+        if (j==5) 
+          tmp.setFace(true);
+        tableaus[i].add(tmp);
       }
     } else {
-      for (int j = 0; j < 5; i++) {
-        tableaus[i].add(cards[UQint()]);
-        pos++;
+      for (int j = 1; j < 5; j++) {
+        Node tmp = cards[UQint()];
+        if (j==4) 
+          tmp.setFace(true);
+        tableaus[i].add(tmp);
       }
     }
   }  
   
   //fills stock
   for (int i = 0; i < 50; i++) {
-    stock.set(i,cards[UQint()]);
+    stock.add(cards[UQint()]);
   }
   
+  
+  /*
   // turns the last card in each tableau up
   for (int i = 0; i < tableaus.length; i++) {
-    tableaus[i].getLast().setFace(true);
+    LL tmp = tableaus[i];
+    Node tmp2 = tmp.getLast();
+    tmp2.setFace(true);
+    //tableaus[i].getLast().setFace(true);
   }
+  */
 }
 
 // when player clicks stock, new cards are added to the tableaus
@@ -337,7 +360,6 @@ int completeTableau() {
   return tableauIndex;
 }
 
-
 // checks if multiple cards can be moved
 boolean validMultipleMove(Node card) {
   Node tmp = card;
@@ -360,8 +382,9 @@ class Node {
   boolean up;
   Node next;
   PImage card;
+  String cardname;
   
-  Node(int v) {
+  Node (int v) {
     value = v;
     up = false;
     next = null;
@@ -392,8 +415,15 @@ class Node {
   
   void setImage() {
     String s = Integer.toString(value);
-    card = loadImage(s+".png");
+    cardname = s+".png";
   }
+   
+  PImage getCard() {  
+    card= loadImage(cardname);
+    return card; 
+  }
+  
+  
   
 }
   
@@ -405,15 +435,14 @@ class LL {
   }
   
   boolean add(Node n) {
-    Node tmp = l;
-    while (tmp.getNext()!=null) {
-      tmp = tmp.getNext();
-    }
-    tmp.setNext(n);
+    if (l==null) 
+      l = n;
+    else
+      getLast().setNext(n);
     return true;
   }
   
-  // remove last card in tableau (player initiated)
+  // remove last card in tableau (player initiated) -- need to write this
   boolean remove() {
     return true;
   }
