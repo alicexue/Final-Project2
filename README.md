@@ -8,3 +8,11 @@ Spider Solitaire - Emily Xu and Alice Xue
 5/28/15: worked on setup screen (AXE)
 
 5/29/15: worked on buttons - menu screen, start button, instruction button (AXE)
+
+6/1/15: worked on fixing glitches with buttons (AXE)
+
+6/3/15: worked on play button (AXE)
+
+6/4/15: added images to the file. worked on fixing glitches with buttons (not finished). worked on setting up game with images (AX)
+
+
