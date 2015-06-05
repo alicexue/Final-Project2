@@ -36,6 +36,36 @@ int listPos = 0;
 
 
 
+
+// loads card images
+PImage img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12, img13;
+/*img1 = loadImage("1.png");
+img2 = loadImage("2.png");
+img3 = loadImage("3.png");
+img4 = loadImage("4.png");
+img5 = loadImage("5.png");
+img6 = loadImage("6.png");
+img7 = loadImage("7.png");
+img8 = loadImage("8.png");
+img9 = loadImage("9.png");
+img10 = loadImage("10.png");
+img11 = loadImage("11.png");
+img12 = loadImage("12.png");
+img13 = loadImage("13.png");*/
+// how to scale image: scale(decimal number)
+// how to print image: image(imageName, x, y)
+int column1 = 200-40;
+int column2 = 775-40;
+int column3 = 1350-40;
+int column4 = 1925-40;
+int column5 = 2500-40;
+int column6 = 3075-40;
+int column7 = 3650-40;
+int column8 = 4225-40;
+int column9 = 4800-40;
+int column10 = 5375-40;
+  
+
 int instX, instY;
 int startX, startY;
 int menuX, menuY;
@@ -95,6 +125,22 @@ void setup1() {
   textSize(20);
   textAlign(LEFT);
   text("Start", 700, 500); 
+  
+  // load card images continued
+  img1 = loadImage("1.png");
+  img2 = loadImage("2.png");
+  img3 = loadImage("3.png");
+  img4 = loadImage("4.png");
+  img5 = loadImage("5.png");
+  img6 = loadImage("6.png");
+  img7 = loadImage("7.png");
+  img8 = loadImage("8.png");
+  img9 = loadImage("9.png");
+  img10 = loadImage("10.png");
+  img11 = loadImage("11.png");
+  img12 = loadImage("12.png");
+  img13 = loadImage("13.png");
+  
 }
 
 void draw() {
@@ -151,8 +197,20 @@ void draw() {
     resetBooleans();
     circlePlayOver = true;
     background(51,153,0);
-    setupPlay();  
-   
+    //setupPlay();  
+    
+    scale(.25);
+    image(img1, column1, 200);
+     
+    image(img2, column2, 200);
+    image(img1, column3, 200);
+    image(img2, column4, 200);
+    image(img1, column5, 200);
+    image(img2, column6, 200);
+    image(img1, column7, 200);
+    image(img2, column8, 200);
+    image(img1, column9, 200);
+    image(img2, column10, 200);
   }
 }
 
