@@ -92,6 +92,9 @@ boolean rectMenuIOver = false;
 // play button
 boolean circlePlayOver = false;
 
+boolean tinted = false;
+
+
 void setup() {
   setup1();   
 }
@@ -201,6 +204,7 @@ void draw() {
     //setupPlay();  
     
     scale(.25);
+    //tint(255,255);
     image(img1, column1, 200);
     image(img2, column2, 200);
     image(img1, column3, 200);
@@ -209,10 +213,23 @@ void draw() {
     image(img2, column6, 200);
     image(img1, column7, 200);
     image(img2, column8, 200);
-    tint(0, 153, 204);
+    //tint(0, 153, 204);
     image(img1, column9, 200);
     //tint(0, 153, 204);
     image(img2, column10, 200);
+    if (tinted == true) {
+      tint(0, 153, 204);
+      //scale(.25);
+      image(img1, column1, 200);
+      tinted = false;
+    }
+    else if (tinted == false) {
+      tint(255,255);
+      //noTint();
+      //scale(.25);
+      image(img1, column1, 200);
+      tinted = true;
+    }
   }
 }
 
@@ -276,7 +293,7 @@ boolean overCircle(int x, int y, int diameter){
 boolean overCard(int x, int y){
     // width card = 500
     // length card = 760
-    if (mouseX >= x && mouseX <= x+500 && mouseY >= y && mouseY <= y+760){
+    if (mouseX >= x/4 && mouseX <= x/4+500 && mouseY >= y/4 && mouseY <= y/4+760){
       return true;
     }
     else {
@@ -306,9 +323,23 @@ void mousePressed(){
     circlePlay = true;
   }
   if (overCard(200, column1)){
-    tint(0, 153, 204);
-    image(img1, column1, 200);
-    noTint();
+    if (tinted == true) 
+      tinted = false;
+    if (tinted == false)
+      tinted = true;
+    //tint(0, 153, 204);
+    //scale(.25);
+    //image(img1, column1, 200);
+    //tint(255,255);
+    /*
+    image(img2, column2, 200);
+    image(img1, column3, 200);
+    image(img2, column4, 200);
+    image(img1, column5, 200);
+    image(img2, column6, 200);
+    image(img1, column7, 200);
+    image(img2, column8, 200);
+    */
   }
 }
 
