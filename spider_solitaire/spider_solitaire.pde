@@ -1,6 +1,10 @@
 // need to fix "go back to menu" function
 // card images https://code.google.com/p/vector-playing-cards/
-//http://www.rgbhex.com/  COLORS
+// http://www.rgbhex.com/  COLORS
+
+// instead of having the back of a card, we could tint the card an opaque color instead
+// still need to figure out how to tint cards when they are clicked
+//      biggest problem is figuring out how to know which card is clicked
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +14,8 @@ ArrayList<Node> stock = new ArrayList<Node>();
 Node[] cards = new Node[104]; 
 ArrayList<Integer> list = new ArrayList<Integer>(); // random ints to 104
 int listPos = 0; 
+PImage[] imgs = new PImage[14];
+int[] columns = new int[10];
 
 // for the initial setup
 // the tableaus will be in an array
@@ -92,7 +98,7 @@ boolean rectMenuIOver = false;
 // play button
 boolean circlePlayOver = false;
 
-boolean tinted = false;
+//boolean tinted = false;
 
 
 void setup() {
@@ -145,6 +151,8 @@ void setup1() {
   img12 = loadImage("12.png");
   img13 = loadImage("13.png");
   
+  setupImgs();
+  setupColumns();
 }
 
 void draw() {
@@ -177,7 +185,6 @@ void draw() {
     ellipse(circlePlayX, circlePlayY, circlePlaySize, circlePlaySize);
     textSize(20);
     text("PLAY!",600,400);
-    text("If you press play, please wait as spiders set up your game :)", 300, 200);
     menuC = color(255,0,0);
     menuX = 700;
     menuY = 500;
@@ -201,8 +208,10 @@ void draw() {
     resetBooleans();
     circlePlayOver = true;
     background(51,153,0);
-    //setupPlay();  
+    setupPlay();  
     
+    /*
+       
     scale(.25);
     //tint(255,255);
     image(img1, column1, 200);
@@ -230,8 +239,42 @@ void draw() {
       image(img1, column1, 200);
       tinted = true;
     }
+    */
   }
+  
+ 
 }
+
+void setupImgs() {
+  imgs[0] = null;
+  imgs[1] = img1;
+  imgs[2] = img2;
+  imgs[3] = img3;
+  imgs[4] = img4;
+  imgs[5] = img5;
+  imgs[6] = img6;
+  imgs[7] = img7;
+  imgs[8] = img8;
+  imgs[9] = img9;
+  imgs[10] = img10;
+  imgs[11] = img11;
+  imgs[12] = img12;
+  imgs[13] = img13;
+}
+
+void setupColumns() {
+  columns[0] = column1;
+  columns[1] = column2;
+  columns[2] = column3;
+  columns[3] = column4;
+  columns[4] = column5;
+  columns[5] = column6;
+  columns[6] = column7;
+  columns[7] = column8;
+  columns[8] = column9;
+  columns[9] = column10;
+}
+  
 
 void resetBooleans() {
     start = false;
@@ -270,7 +313,12 @@ void update(int x, int y) {
     resetBooleans2();
     circlePlayOver = true;    
   }
- 
+  /*
+  if (play) {
+    if (validCardCoords(x,y) 
+       if (overCard
+  */    
+    
 }
 
 boolean overRect(int x, int y, int w, int h) {
@@ -301,6 +349,18 @@ boolean overCard(int x, int y){
     }
 }
 
+/*
+boolean validCardCoords(int x, int y) {
+  boolean result = false;
+  for (int i = 0; i<columns.length;i++) 
+    if (x=i)
+      result = true;
+  if (result == true && (y-150)%150)) 
+    return true;
+  return false;
+}  
+*/
+
 void mousePressed(){ 
   if (rectInstOver == true){
     resetBooleans();
@@ -322,6 +382,7 @@ void mousePressed(){
     resetBooleans();
     circlePlay = true;
   }
+  /*
   if (overCard(200, column1)){
     if (tinted == true) 
       tinted = false;
@@ -331,7 +392,6 @@ void mousePressed(){
     //scale(.25);
     //image(img1, column1, 200);
     //tint(255,255);
-    /*
     image(img2, column2, 200);
     image(img1, column3, 200);
     image(img2, column4, 200);
@@ -339,22 +399,9 @@ void mousePressed(){
     image(img2, column6, 200);
     image(img1, column7, 200);
     image(img2, column8, 200);
-    */
   }
-}
-
-
-void setupPlay() {
-  setupGame();
-  int posY = 50;
-  for (int i = 0; i<tableaus.length; i++) {
-    Node tmp = tableaus[i].getFirst();
-    while (tmp != null) {
-      image(tmp.getCard(),(i+10)*10,posY);
-      tmp = tmp.getNext();
-      posY=posY+100;
-    }
-  }
+  */
+  
   
 }
 
@@ -364,6 +411,26 @@ void setupPlay() {
 
 
 
+void setupPlay() {
+  setupGame();
+  int posY = 150;
+  scale(.25);
+  for (int i = 0; i<tableaus.length; i++) {
+    Node tmp = tableaus[i].getFirst();
+    while (tmp != null) {
+      PImage tmpI = imgs[tmp.getValue()];
+      int c = columns[i];
+      if (tmp.getTinted()) 
+        tint(255,255);
+      image(tmpI,c,posY);
+      //if (tmpI.getTinted())
+      //  noTint();
+      tmp = tmp.getNext();
+      posY=posY+150;
+    }
+    posY = 150;
+  }
+}
 
 void makeDeck(int startpos) {
   int pos = startpos;
@@ -372,6 +439,7 @@ void makeDeck(int startpos) {
     cards[pos+13] = new Node(i+1);
     cards[pos+26] = new Node(i+1);
     cards[pos+39] = new Node(i+1);
+    pos++;
   }
 }
 
@@ -405,15 +473,19 @@ void setupGame() {
     if (i < 4) {
       for (int j = 1; j < 6; j++) {
         Node tmp = cards[UQint()];
+        /*
         if (j==5) 
           tmp.setFace(true);
+          */
         tableaus[i].add(tmp);
       }
     } else {
       for (int j = 1; j < 5; j++) {
         Node tmp = cards[UQint()];
+        /*
         if (j==4) 
           tmp.setFace(true);
+          */
         tableaus[i].add(tmp);
       }
     }
@@ -489,13 +561,16 @@ class Node {
   int value;
   boolean up;
   Node next;
-  PImage card;
-  String cardname;
+  boolean tinted;
+  
+  //PImage card;
+  //String cardname;
   
   Node (int v) {
     value = v;
     up = false;
     next = null;
+    tinted = false;
   }
   
   void setFace(boolean up1) {
@@ -521,15 +596,28 @@ class Node {
     return next;
   }
   
+  boolean getTinted() {
+    return tinted;
+  }
+  
+  void setTinted(boolean n) {
+    if (n==true)
+      tinted = true;
+    else 
+      tinted = false;
+  }
+  
+  /*
   void setImage() {
     String s = Integer.toString(value);
     cardname = s+".png";
   }
-   
+  
   PImage getCard() {  
-    card= loadImage(cardname);
-    return card; 
+    //card= loadImage(cardname);
+    return "img"+Integer.toString(value); 
   }
+  */
   
   
   
