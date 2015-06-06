@@ -6,17 +6,9 @@
 // still need to figure out how to tint cards when they are clicked
 //      biggest problem is figuring out how to know which card is clicked
 // we need to figure out how the point system works
-
-import java.util.ArrayList;
-import java.util.Collections;
-
-LL[] tableaus;
-ArrayList<Node> stock = new ArrayList<Node>();
-Node[] cards = new Node[104]; 
-ArrayList<Integer> list = new ArrayList<Integer>(); // random ints to 104
-int listPos = 0; 
-PImage[] imgs = new PImage[14];
-int[] columns = new int[10];
+// adding from the stock works the first time when clicked, but not the second time
+// maybe we can use shaders/set() to outline the cards when they are face down
+// remove cards from upCards
 
 // for the initial setup
 // the tableaus will be in an array
@@ -39,7 +31,19 @@ int[] columns = new int[10];
 // intermediate: two suits (spades and hearts)
 // difficult: four suits
 
+import java.util.ArrayList;
+import java.util.Collections;
 
+LL[] tableaus;
+ArrayList<Node> stock = new ArrayList<Node>();
+Node[] cards = new Node[104]; 
+ArrayList<Integer> list = new ArrayList<Integer>(); // random ints to 104
+int listPos = 0; 
+PImage[] imgs = new PImage[14];
+int[] columns = new int[10];
+
+ArrayList<Node> upCards = new ArrayList<Node>();
+Node tmpCard;
 
 // width card = 500
 // length card = 760
@@ -97,8 +101,39 @@ boolean rectMenuIOver = false;
 // play button
 boolean circlePlayOver = false;
 
+boolean clicked = false;
+
 //boolean tinted = false;
 
+void setupImgs() {
+  imgs[0] = null;
+  imgs[1] = img1;
+  imgs[2] = img2;
+  imgs[3] = img3;
+  imgs[4] = img4;
+  imgs[5] = img5;
+  imgs[6] = img6;
+  imgs[7] = img7;
+  imgs[8] = img8;
+  imgs[9] = img9;
+  imgs[10] = img10;
+  imgs[11] = img11;
+  imgs[12] = img12;
+  imgs[13] = img13;
+}
+
+void setupColumns() {
+  columns[0] = column1;
+  columns[1] = column2;
+  columns[2] = column3;
+  columns[3] = column4;
+  columns[4] = column5;
+  columns[5] = column6;
+  columns[6] = column7;
+  columns[7] = column8;
+  columns[8] = column9;
+  columns[9] = column10;
+}
 
 void setup() {
   setup1();   
@@ -207,6 +242,7 @@ void draw() {
     resetBooleans();
     circlePlayOver = true;
     background(51,153,0);
+    setupGame();
     setupPlay();  
     
     /*
@@ -243,37 +279,6 @@ void draw() {
   
  
 }
-
-void setupImgs() {
-  imgs[0] = null;
-  imgs[1] = img1;
-  imgs[2] = img2;
-  imgs[3] = img3;
-  imgs[4] = img4;
-  imgs[5] = img5;
-  imgs[6] = img6;
-  imgs[7] = img7;
-  imgs[8] = img8;
-  imgs[9] = img9;
-  imgs[10] = img10;
-  imgs[11] = img11;
-  imgs[12] = img12;
-  imgs[13] = img13;
-}
-
-void setupColumns() {
-  columns[0] = column1;
-  columns[1] = column2;
-  columns[2] = column3;
-  columns[3] = column4;
-  columns[4] = column5;
-  columns[5] = column6;
-  columns[6] = column7;
-  columns[7] = column8;
-  columns[8] = column9;
-  columns[9] = column10;
-}
-  
 
 void resetBooleans() {
     start = false;
@@ -312,13 +317,25 @@ void update(int x, int y) {
     resetBooleans2();
     circlePlayOver = true;    
   }
-  /*
-  if (play) {
-    if (validCardCoords(x,y) 
-       if (overCard
-  */    
-    
+  
+  if (circlePlay) {
+    for (int i = 0; i<upCards.size(); i++) {
+      Node tmp = upCards.get(i);
+      int tmpX = tmp.getX();
+      int tmpY = tmp.getY();
+      if (overSpefCard(x, y, tmpX, tmpY)) {
+        clicked = true;
+        tmpCard = tmp;
+        break;
+        //tint(0, 153, 204);
+        //image(imgs[tmp.getValue()],tmpX, tmpY);
+      }
+    }
+  }
+         
 }
+
+
 
 boolean overRect(int x, int y, int w, int h) {
   if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h) {
@@ -348,16 +365,27 @@ boolean overCard(int x, int y){
     }
 }
 
-/*
-boolean validCardCoords(int x, int y) {
-  boolean result = false;
-  for (int i = 0; i<columns.length;i++) 
-    if (x=i)
-      result = true;
-  if (result == true && (y-150)%150)) 
+boolean overSpefCard(int x1, int y1, int x2, int y2) {
+  if (x1 >= x2 && x1 <= x2/4+500 && y1 <= y2 && y1 <= y2/4+760) 
     return true;
   return false;
+}
+
+/*
+
+int validCardCoords(int x, int y) {
+  boolean result = false;
+  int column = 0;
+  for (int i = 0; i<columns.length;i++) 
+    if (x==i) {
+      result = true;
+      column = i;
+    }
+  if (result == true && (y-150)%150==0) 
+    return column;
+  return -1;
 }  
+
 */
 
 void mousePressed(){ 
@@ -401,7 +429,19 @@ void mousePressed(){
   }
   */
   
+  // click on stock
+  // this only works when clicked once when game begins but not the next times
+  if (overCard(column1, 2200)) {
+    addFromStock(); 
+    setupPlay();
+  }
   
+  if (clicked) {
+    tint(0, 153, 204);
+    image(imgs[tmpCard.getValue()],tmpCard.getX(),tmpCard.getY());
+    clicked = false;
+  }
+
 }
 
 
@@ -411,24 +451,29 @@ void mousePressed(){
 
 
 void setupPlay() {
-  setupGame();
   int posY = 150;
   scale(.25);
   for (int i = 0; i<tableaus.length; i++) {
     Node tmp = tableaus[i].getFirst();
     while (tmp != null) {
+      if (!tmp.faceUp()) {
+        tint(0, 0, 0, 252);
+      }
       PImage tmpI = imgs[tmp.getValue()];
       int c = columns[i];
-      if (tmp.getTinted()) 
-        tint(255,255);
       image(tmpI,c,posY);
-      //if (tmpI.getTinted())
-      //  noTint();
+      noTint();
+      tmp.setX(c);
+      tmp.setY(posY);
       tmp = tmp.getNext();
       posY=posY+150;
     }
     posY = 150;
   }
+  Node stocktmp = stock.get(0);
+  tint(0, 0, 0, 252);
+  image(imgs[stocktmp.getValue()],column1,2200);
+  
 }
 
 void makeDeck(int startpos) {
@@ -492,31 +537,30 @@ void setupGame() {
   
   //fills stock
   for (int i = 0; i < 50; i++) {
-    stock.add(cards[UQint()]);
+    Node tmp = cards[UQint()];
+    tmp.setFace(false);
+    stock.add(tmp);
   }
   
-  
-  /*
   // turns the last card in each tableau up
   for (int i = 0; i < tableaus.length; i++) {
     LL tmp = tableaus[i];
     Node tmp2 = tmp.getLast();
     tmp2.setFace(true);
-    //tableaus[i].getLast().setFace(true);
+    upCards.add(tmp2);
   }
-  */
+  
 }
 
-// when player clicks stock, new cards are added to the tableaus
+// when player clicks stock, this method is called to add new cards to the tableaus
 void addFromStock() {
-  int pos = 0;
   for (int i = 0; i < tableaus.length; i++) {
      LL l = tableaus[i];
-     Node n = stock.get(pos);
+     Node n = stock.get(0);
      n.setFace(true);
      l.add(n);
-     stock.remove(pos);
-     pos++;
+     upCards.add(n);
+     stock.remove(0);
   }
 }
 
@@ -560,9 +604,13 @@ class Node {
   int value;
   boolean up;
   Node next;
+  // tint blue if clicked
   boolean tinted;
   
-  //PImage card;
+  int x;
+  int y;
+  
+  PImage card;
   //String cardname;
   
   Node (int v) {
@@ -595,6 +643,22 @@ class Node {
     return next;
   }
   
+  void setX(int tmpx) {
+    x = tmpx;
+  }
+  
+  void setY(int tmpy) {
+    y = tmpy;
+  }
+  
+  int getX() {
+    return x;
+  }
+  
+  int getY() {
+    return y;
+  }
+  
   boolean getTinted() {
     return tinted;
   }
@@ -611,14 +675,12 @@ class Node {
     String s = Integer.toString(value);
     cardname = s+".png";
   }
-  
-  PImage getCard() {  
-    //card= loadImage(cardname);
-    return "img"+Integer.toString(value); 
-  }
   */
   
-  
+  PImage getCard() {  
+    return imgs[value]; 
+  }
+   
   
 }
   
