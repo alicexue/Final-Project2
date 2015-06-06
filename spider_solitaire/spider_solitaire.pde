@@ -1,10 +1,11 @@
-// need to fix "go back to menu" function
 // card images https://code.google.com/p/vector-playing-cards/
 // http://www.rgbhex.com/  COLORS
 
+// need to fix "go back to menu" function
 // instead of having the back of a card, we could tint the card an opaque color instead
 // still need to figure out how to tint cards when they are clicked
 //      biggest problem is figuring out how to know which card is clicked
+// we need to figure out how the point system works
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,12 +23,10 @@ int[] columns = new int[10];
 // the piles of cards in the tableaus will be linked lists of nodes
 // these nodes will point to the next cards
 
-// the cards will be represented by nodes(?)
+// the cards will be represented by nodes
 // the cards will have a boolean to represent face up/down
 // the cards also need to have values and names 
 // the values will determine if a move is valid or not 
-
-// we need to figure out how the point system works
 
 
 // there are 104 cards
