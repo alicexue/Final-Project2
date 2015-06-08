@@ -9,6 +9,7 @@
 // adding from the stock works the first time when clicked, but not the second time
 // maybe we can use shaders/set() to outline the cards when they are face down
 // remove cards from upCards
+// should rewrite setup into different functions 
 
 // for the initial setup
 // the tableaus will be in an array
@@ -93,6 +94,7 @@ boolean start = false;
 boolean menuI = false;
 boolean menuS = false;
 boolean circlePlay = false;
+boolean play = false;
 
 boolean rectInstOver = false;
 boolean rectStartOver = false;
@@ -244,6 +246,8 @@ void draw() {
     background(51,153,0);
     setupGame();
     setupPlay();  
+    circlePlay = false;
+    play = true;
     
     /*
        
@@ -318,7 +322,7 @@ void update(int x, int y) {
     circlePlayOver = true;    
   }
   
-  if (circlePlay) {
+  if (play) {
     for (int i = 0; i<upCards.size(); i++) {
       Node tmp = upCards.get(i);
       int tmpX = tmp.getX();
@@ -326,7 +330,7 @@ void update(int x, int y) {
       if (overSpefCard(x, y, tmpX, tmpY)) {
         clicked = true;
         tmpCard = tmp;
-        break;
+        return;
         //tint(0, 153, 204);
         //image(imgs[tmp.getValue()],tmpX, tmpY);
       }
@@ -366,7 +370,7 @@ boolean overCard(int x, int y){
 }
 
 boolean overSpefCard(int x1, int y1, int x2, int y2) {
-  if (x1 >= x2 && x1 <= x2/4+500 && y1 <= y2 && y1 <= y2/4+760) 
+  if (x1 >= x2 && x1 <= x2/4+500 && y1 >= y2 && y1 <= y2/4+760) 
     return true;
   return false;
 }
@@ -430,8 +434,8 @@ void mousePressed(){
   */
   
   // click on stock
-  // this only works when clicked once when game begins but not the next times
-  if (overCard(column1, 2200)) {
+  // this only works when clicked once when game begins but not the next time -- need to fix
+  if (overCard(column1, 2200) && !stock.isEmpty()) {
     addFromStock(); 
     setupPlay();
   }
@@ -439,6 +443,12 @@ void mousePressed(){
   if (clicked) {
     tint(0, 153, 204);
     image(imgs[tmpCard.getValue()],tmpCard.getX(),tmpCard.getY());
+    //noTint();
+    Node tmp = tmpCard.getNext();
+    while (tmp!=null) {
+      image(imgs[tmp.getValue()],tmpCard.getX(),tmpCard.getY());
+      tmp = tmp.getNext();
+    }
     clicked = false;
   }
 
@@ -462,7 +472,9 @@ void setupPlay() {
       PImage tmpI = imgs[tmp.getValue()];
       int c = columns[i];
       image(tmpI,c,posY);
-      noTint();
+      if (!tmp.faceUp()){
+        noTint();
+      }
       tmp.setX(c);
       tmp.setY(posY);
       tmp = tmp.getNext();
@@ -473,6 +485,7 @@ void setupPlay() {
   Node stocktmp = stock.get(0);
   tint(0, 0, 0, 252);
   image(imgs[stocktmp.getValue()],column1,2200);
+  //noTint();
   
 }
 
@@ -538,7 +551,7 @@ void setupGame() {
   //fills stock
   for (int i = 0; i < 50; i++) {
     Node tmp = cards[UQint()];
-    tmp.setFace(false);
+    tmp.setFace(true);
     stock.add(tmp);
   }
   
