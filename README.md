@@ -17,3 +17,5 @@ Spider Solitaire - Emily Xu and Alice Xue
         loaded images to code and set up play screen. worked on tinting of images. (EX)
 
 6/5/15: worked on tinting images (AXE) got graphical setup of game to work where all of the displaying cards are face up and in the correct positions
+
+6/6/15: worked on loading card images and tinting face down cards
