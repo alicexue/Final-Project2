@@ -280,7 +280,10 @@ void draw() {
     }
     */
   }
-  
+  //float x;
+  //image(img2, x, 0, 400, 500);
+  //x+=0.01;
+ 
  
 }
 
@@ -330,9 +333,8 @@ void update(int x, int y) {
       if (overSpefCard(x, y, tmpX, tmpY)) {
         clicked = true;
         tmpCard = tmp;
-        return;
-        //tint(0, 153, 204);
-        //image(imgs[tmp.getValue()],tmpX, tmpY);
+        tint(0, 153, 204);
+        image(imgs[tmp.getValue()],tmpX, tmpY);
       }
     }
   }
@@ -361,7 +363,7 @@ boolean overCircle(int x, int y, int diameter){
 boolean overCard(int x, int y){
     // width card = 500
     // length card = 760
-    if (mouseX >= x/4 && mouseX <= x/4+500 && mouseY >= y/4 && mouseY <= y/4+760){
+    if (mouseX >= x/4 && mouseX <= (x+500)/4 && mouseY >= y/4 && mouseY <= (y+760)/4){
       return true;
     }
     else {
@@ -370,7 +372,7 @@ boolean overCard(int x, int y){
 }
 
 boolean overSpefCard(int x1, int y1, int x2, int y2) {
-  if (x1 >= x2 && x1 <= x2/4+500 && y1 >= y2 && y1 <= y2/4+760) 
+  if (x1 >= x2 && x1 <= (x2+500)/4 && y1 >= y2 && y1 <= (y2+760)/4) 
     return true;
   return false;
 }
@@ -448,8 +450,7 @@ void mousePressed(){
     while (tmp!=null) {
       image(imgs[tmp.getValue()],tmpCard.getX(),tmpCard.getY());
       tmp = tmp.getNext();
-    }
-    clicked = false;
+    } 
   }
 
 }
@@ -482,10 +483,12 @@ void setupPlay() {
     }
     posY = 150;
   }
-  Node stocktmp = stock.get(0);
-  tint(0, 0, 0, 252);
-  image(imgs[stocktmp.getValue()],column1,2200);
-  //noTint();
+  if (!stock.isEmpty()) {
+    Node stocktmp = stock.get(0);
+    tint(0, 0, 0, 252);
+    image(imgs[stocktmp.getValue()],column1,2200);
+    //noTint();
+  }
   
 }
 
