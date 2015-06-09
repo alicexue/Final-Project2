@@ -16,6 +16,8 @@ Spider Solitaire - Emily Xu and Alice Xue
 6/4/15: added images to the file. worked on fixing glitches with buttons (not finished). worked on setting up game with images (AX)
         loaded images to code and set up play screen. worked on tinting of images. (EX)
 
-6/5/15: worked on tinting images (AXE) got graphical setup of game to work where all of the displaying cards are face up and in the correct positions
+6/5/15: worked on tinting images (AXE) got graphical setup of game to work where all of the displaying cards are face up and in the correct positions (AX)
 
-6/6/15: worked on loading card images and tinting face down cards
+6/6/15: worked on loading card images and tinting face down cards (AX)
+
+6/8/15: worked on fixing bugs with clicking on cards (AX)
