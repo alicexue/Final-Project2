@@ -326,10 +326,12 @@ void update(int x, int y) {
   }
   //text ("egwegwer", 600, 600);
   if (play) {
+    int tmpX;
+    int tmpY;
     for (int i = 0; i<upCards.size(); i++) {
       Node tmp = upCards.get(i);
-      int tmpX = tmp.getX();
-      int tmpY = tmp.getY();            /*----- the problem is w these ints -----*/
+      tmpX = tmp.getX();
+      tmpY = tmp.getY();            /*----- the problem is w these ints??? -----*/
       //text("egeege", 600, 600);
       text(str(tmpX), 600, 600);
               fill(204, 102, 0);
@@ -768,6 +770,8 @@ class LL {
 
 
 /*
+
+everytime a card gets called again you print it again??? :( ugh
 to play:
 click one card a, click another card b. if a = b-1, then a goes on top of b
 everything on top of a follows a on top of b
