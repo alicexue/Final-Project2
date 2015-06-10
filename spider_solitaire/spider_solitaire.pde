@@ -490,6 +490,15 @@ void setupPlay() {
     //noTint();
   }
   
+  
+  // width card = 500
+  // length card = 760
+  fill(204, 102, 0);
+  rect(column1, 890, 500, 20, 20, 20, 0, 0);
+  rect((column1+495), 890, 20, 760-5, 0, 20, 20, 0);
+  rect(column1-10, 890, 20, 760-5, 20, 0, 0, 20);
+  rect((column1), (865+760), 500, 20, 0, 0, 20, 20);
+  
 }
 
 void makeDeck(int startpos) {
