@@ -21,3 +21,6 @@ Spider Solitaire - Emily Xu and Alice Xue
 6/6/15: worked on loading card images and tinting face down cards (AX)
 
 6/8/15: worked on fixing bugs with clicking on cards (AX)
+
+6/9/15: in class stuff???
+        worked on outline of cards when clicked (EX)
