@@ -325,36 +325,7 @@ void update(int x, int y) {
     circlePlayOver = true;    
   }
   //text ("egwegwer", 600, 600);
-  if (play) {
-    int tmpX;
-    int tmpY;
-    for (int i = 0; i<upCards.size(); i++) {
-      Node tmp = upCards.get(i);
-      tmpX = tmp.getX();
-      tmpY = tmp.getY();            /*----- the problem is w these ints??? -----*/
-      //text("egeege", 600, 600);
-      text(str(tmpX), 600, 600);
-              fill(204, 102, 0);
-              rect(tmpX, tmpY, 500, 20, 20, 20, 0, 0);     //y = 890 = 900-10
-              rect((tmpX+495), tmpY, 20, 760-5, 0, 20, 20, 0);     //y = 890 = 900 - 10
-              rect(tmpX-10, tmpY, 20, 760-5, 20, 0, 0, 20);     //y = 890 = 900 - 10
-              rect((tmpX), (tmpY-25+760), 500, 20, 0, 0, 20, 20);     //y = 865 = 900 - 35
-      if (overSpefCard(mouseX, mouseY, tmpX, tmpY)) {
-        clicked = true;
-        tmpCard = tmp;
-        tint(0, 153, 204);
-        image(imgs[tmp.getValue()],tmpX, tmpY);
-        
-        // width card = 500
-        // length card = 760
-        fill(204, 102, 0);
-        rect(tmpX, tmpY, 500, 20, 20, 20, 0, 0);     //y = 890 = 900-10
-        rect((tmpX+495), tmpY, 20, 760-5, 0, 20, 20, 0);     //y = 890 = 900 - 10
-        rect(tmpX-10, tmpY, 20, 760-5, 20, 0, 0, 20);     //y = 890 = 900 - 10
-        rect((tmpX), (tmpY-25+760), 500, 20, 0, 0, 20, 20);     //y = 865 = 900 - 35
-      }
-    }
-  }
+
          
 }
 
@@ -468,6 +439,39 @@ void mousePressed(){
       image(imgs[tmp.getValue()],tmpCard.getX(),tmpCard.getY());
       tmp = tmp.getNext();
     } 
+  }
+  
+  if (play) {
+    int tmpX;
+    int tmpY;
+    for (int i = 0; i<upCards.size(); i++) {
+      Node tmp = upCards.get(i);
+      tmpX = tmp.getX();
+      tmpY = tmp.getY();            /*----- the problem is w these ints??? -----*/
+      //text("egeege", 600, 600);
+      text(str(tmpX), 600, 600);
+              fill(204, 102, 0);
+              rect(tmpX, tmpY, 500, 20, 20, 20, 0, 0);     //y = 890 = 900-10
+              rect((tmpX+495), tmpY, 20, 760-5, 0, 20, 20, 0);     //y = 890 = 900 - 10
+              rect(tmpX-10, tmpY, 20, 760-5, 20, 0, 0, 20);     //y = 890 = 900 - 10
+              rect((tmpX), (tmpY-25+760), 500, 20, 0, 0, 20, 20);     //y = 865 = 900 - 35
+      if (overCard(tmpX, tmpY)) {
+        clicked = true;
+        tmpCard = tmp;
+        textSize(3564);
+        text("TINTTTTNUTNU",800,800);
+        tint(0, 153, 204);
+        image(imgs[tmp.getValue()],tmpX, tmpY);
+        
+        // width card = 500
+        // length card = 760
+        fill(204, 102, 0);
+        rect(tmpX, tmpY, 500, 20, 20, 20, 0, 0);     //y = 890 = 900-10
+        rect((tmpX+495), tmpY, 20, 760-5, 0, 20, 20, 0);     //y = 890 = 900 - 10
+        rect(tmpX-10, tmpY, 20, 760-5, 20, 0, 0, 20);     //y = 890 = 900 - 10
+        rect((tmpX), (tmpY-25+760), 500, 20, 0, 0, 20, 20);     //y = 865 = 900 - 35
+      }
+    }
   }
 
 }
