@@ -324,17 +324,27 @@ void update(int x, int y) {
     resetBooleans2();
     circlePlayOver = true;    
   }
-  
+  //text ("egwegwer", 600, 600);
   if (play) {
     for (int i = 0; i<upCards.size(); i++) {
       Node tmp = upCards.get(i);
       int tmpX = tmp.getX();
       int tmpY = tmp.getY();
+      //text("egeege", 600, 600);
+      text(str(tmpX), 600, 600);
       if (overSpefCard(x, y, tmpX, tmpY)) {
         clicked = true;
         tmpCard = tmp;
         tint(0, 153, 204);
         image(imgs[tmp.getValue()],tmpX, tmpY);
+        
+        // width card = 500
+        // length card = 760
+        fill(204, 102, 0);
+        rect(x, y, 500, 20, 20, 20, 0, 0);     //890
+        rect((x+495), y, 20, 760-5, 0, 20, 20, 0);     //890
+        rect(x-10, y, 20, 760-5, 20, 0, 0, 20);     //890
+         rect((x), (y-25+760), 500, 20, 0, 0, 20, 20);     //865
       }
     }
   }
@@ -363,7 +373,7 @@ boolean overCircle(int x, int y, int diameter){
 boolean overCard(int x, int y){
     // width card = 500
     // length card = 760
-    if (mouseX >= x/4 && mouseX <= (x+500)/4 && mouseY >= y/4 && mouseY <= (y+760)/4){
+    if (mouseX >= x/1 && mouseX <= (x+500)/1 && mouseY >= y/1 && mouseY <= (y+760)/1){
       return true;
     }
     else {
@@ -372,7 +382,7 @@ boolean overCard(int x, int y){
 }
 
 boolean overSpefCard(int x1, int y1, int x2, int y2) {
-  if (x1 >= x2 && x1 <= (x2+500)/4 && y1 >= y2 && y1 <= (y2+760)/4) 
+  if (x1 >= x2 && x1 <= (x2+500)/1 && y1 >= y2 && y1 <= (y2+760)/1) 
     return true;
   return false;
 }
@@ -498,7 +508,7 @@ void setupPlay() {
   rect((column1+495), 890, 20, 760-5, 0, 20, 20, 0);
   rect(column1-10, 890, 20, 760-5, 20, 0, 0, 20);
   rect((column1), (865+760), 500, 20, 0, 0, 20, 20);
-  
+  noFill();
 }
 
 void makeDeck(int startpos) {
