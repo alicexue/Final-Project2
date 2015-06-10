@@ -329,10 +329,15 @@ void update(int x, int y) {
     for (int i = 0; i<upCards.size(); i++) {
       Node tmp = upCards.get(i);
       int tmpX = tmp.getX();
-      int tmpY = tmp.getY();
+      int tmpY = tmp.getY();            /*----- the problem is w these ints -----*/
       //text("egeege", 600, 600);
       text(str(tmpX), 600, 600);
-      if (overSpefCard(x, y, tmpX, tmpY)) {
+              fill(204, 102, 0);
+              rect(tmpX, tmpY, 500, 20, 20, 20, 0, 0);     //y = 890 = 900-10
+              rect((tmpX+495), tmpY, 20, 760-5, 0, 20, 20, 0);     //y = 890 = 900 - 10
+              rect(tmpX-10, tmpY, 20, 760-5, 20, 0, 0, 20);     //y = 890 = 900 - 10
+              rect((tmpX), (tmpY-25+760), 500, 20, 0, 0, 20, 20);     //y = 865 = 900 - 35
+      if (overSpefCard(mouseX, mouseY, tmpX, tmpY)) {
         clicked = true;
         tmpCard = tmp;
         tint(0, 153, 204);
@@ -341,10 +346,10 @@ void update(int x, int y) {
         // width card = 500
         // length card = 760
         fill(204, 102, 0);
-        rect(x, y, 500, 20, 20, 20, 0, 0);     //890
-        rect((x+495), y, 20, 760-5, 0, 20, 20, 0);     //890
-        rect(x-10, y, 20, 760-5, 20, 0, 0, 20);     //890
-         rect((x), (y-25+760), 500, 20, 0, 0, 20, 20);     //865
+        rect(tmpX, tmpY, 500, 20, 20, 20, 0, 0);     //y = 890 = 900-10
+        rect((tmpX+495), tmpY, 20, 760-5, 0, 20, 20, 0);     //y = 890 = 900 - 10
+        rect(tmpX-10, tmpY, 20, 760-5, 20, 0, 0, 20);     //y = 890 = 900 - 10
+        rect((tmpX), (tmpY-25+760), 500, 20, 0, 0, 20, 20);     //y = 865 = 900 - 35
       }
     }
   }
@@ -508,6 +513,8 @@ void setupPlay() {
   rect((column1+495), 890, 20, 760-5, 0, 20, 20, 0);
   rect(column1-10, 890, 20, 760-5, 20, 0, 0, 20);
   rect((column1), (865+760), 500, 20, 0, 0, 20, 20);
+  textSize(100);
+  text("testing^", 160, 1800);
   noFill();
 }
 
@@ -753,3 +760,21 @@ class LL {
     
 }
 
+
+
+
+
+
+
+
+/*
+to play:
+click one card a, click another card b. if a = b-1, then a goes on top of b
+everything on top of a follows a on top of b
+
+once face up cards are 1 to 13, stack of cards 1 t0 13 disappears
+one card (king?) appears at bottom of screen
+
+if nontinted card is removed, leaving tinted card on top of pile, tinted card untints
+
+*/
