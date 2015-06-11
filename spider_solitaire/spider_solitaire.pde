@@ -2,14 +2,9 @@
 // http://www.rgbhex.com/  COLORS
 
 // need to fix "go back to menu" function
-// instead of having the back of a card, we could tint the card an opaque color instead
-// still need to figure out how to tint cards when they are clicked
-//      biggest problem is figuring out how to know which card is clicked
 // we need to figure out how the point system works
 // adding from the stock works the first time when clicked, but not the second time
-// maybe we can use shaders/set() to outline the cards when they are face down
 // remove cards from upCards
-// should rewrite setup into different functions 
 
 // for the initial setup
 // the tableaus will be in an array
@@ -20,7 +15,6 @@
 // the cards will have a boolean to represent face up/down
 // the cards also need to have values and names 
 // the values will determine if a move is valid or not 
-
 
 // there are 104 cards
 // in the setup, 54 cards are put in the columns
@@ -50,19 +44,6 @@ Node tmpCard;
 // length card = 760
 // loads card images
 PImage img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12, img13;
-/*img1 = loadImage("1.png");
-img2 = loadImage("2.png");
-img3 = loadImage("3.png");
-img4 = loadImage("4.png");
-img5 = loadImage("5.png");
-img6 = loadImage("6.png");
-img7 = loadImage("7.png");
-img8 = loadImage("8.png");
-img9 = loadImage("9.png");
-img10 = loadImage("10.png");
-img11 = loadImage("11.png");
-img12 = loadImage("12.png");
-img13 = loadImage("13.png");*/
 // how to scale image: scale(decimal number)
 // how to print image: image(imageName, x, y)
 int column1 = 200-40;
@@ -105,7 +86,7 @@ boolean circlePlayOver = false;
 
 boolean clicked = false;
 
-//boolean tinted = false;
+boolean tinted = false;
 
 void setupImgs() {
   imgs[0] = null;
@@ -192,7 +173,8 @@ void setup1() {
 }
 
 void draw() {
-  update(mouseX, mouseY);
+  if (!play)
+    update(mouseX, mouseY);
   if (inst == true) {
     //resetBooleans();
     inst = true;
@@ -241,50 +223,17 @@ void draw() {
     setup1();
   }
   if (circlePlay == true) {
-    resetBooleans();
-    circlePlayOver = true;
-    background(51,153,0);
-    setupGame();
-    setupPlay();  
     circlePlay = false;
     play = true;
-    
-    /*
-       
-    scale(.25);
-    //tint(255,255);
-    image(img1, column1, 200);
-    image(img2, column2, 200);
-    image(img1, column3, 200);
-    image(img2, column4, 200);
-    image(img1, column5, 200);
-    image(img2, column6, 200);
-    image(img1, column7, 200);
-    image(img2, column8, 200);
-    //tint(0, 153, 204);
-    image(img1, column9, 200);
-    //tint(0, 153, 204);
-    image(img2, column10, 200);
-    if (tinted == true) {
-      tint(0, 153, 204);
-      //scale(.25);
-      image(img1, column1, 200);
-      tinted = false;
-    }
-    else if (tinted == false) {
-      tint(255,255);
-      //noTint();
-      //scale(.25);
-      image(img1, column1, 200);
-      tinted = true;
-    }
-    */
-  }
-  //float x;
-  //image(img2, x, 0, 400, 500);
-  //x+=0.01;
- 
- 
+    background(51,153,0);
+    setupGame();
+  } 
+  if (play) {
+    setupPlay();
+    textSize(100);
+    text("playing now",466,434);
+   }  
+   
 }
 
 void resetBooleans() {
@@ -323,10 +272,7 @@ void update(int x, int y) {
   if (overCircle(circlePlayX, circlePlayY, circlePlaySize)) {
     resetBooleans2();
     circlePlayOver = true;    
-  }
-  //text ("egwegwer", 600, 600);
-
-         
+  }     
 }
 
 
@@ -351,7 +297,7 @@ boolean overCircle(int x, int y, int diameter){
 boolean overCard(int x, int y){
     // width card = 500
     // length card = 760
-    if (mouseX >= x/1 && mouseX <= (x+500)/1 && mouseY >= y/1 && mouseY <= (y+760)/1){
+    if (mouseX*4 >= x/1 && mouseX*4 <= (x+500)/1 && mouseY*4 >= y/1 && mouseY*4 <= (y+760)/1){
       return true;
     }
     else {
@@ -359,28 +305,6 @@ boolean overCard(int x, int y){
     }
 }
 
-boolean overSpefCard(int x1, int y1, int x2, int y2) {
-  if (x1 >= x2 && x1 <= (x2+500)/1 && y1 >= y2 && y1 <= (y2+760)/1) 
-    return true;
-  return false;
-}
-
-/*
-
-int validCardCoords(int x, int y) {
-  boolean result = false;
-  int column = 0;
-  for (int i = 0; i<columns.length;i++) 
-    if (x==i) {
-      result = true;
-      column = i;
-    }
-  if (result == true && (y-150)%150==0) 
-    return column;
-  return -1;
-}  
-
-*/
 
 void mousePressed(){ 
   if (rectInstOver == true){
@@ -403,25 +327,6 @@ void mousePressed(){
     resetBooleans();
     circlePlay = true;
   }
-  /*
-  if (overCard(200, column1)){
-    if (tinted == true) 
-      tinted = false;
-    if (tinted == false)
-      tinted = true;
-    //tint(0, 153, 204);
-    //scale(.25);
-    //image(img1, column1, 200);
-    //tint(255,255);
-    image(img2, column2, 200);
-    image(img1, column3, 200);
-    image(img2, column4, 200);
-    image(img1, column5, 200);
-    image(img2, column6, 200);
-    image(img1, column7, 200);
-    image(img2, column8, 200);
-  }
-  */
   
   // click on stock
   // this only works when clicked once when game begins but not the next time -- need to fix
@@ -431,6 +336,8 @@ void mousePressed(){
   }
   
   if (clicked) {
+    textSize(3564);
+    text("CLICKED@!",800,800);
     tint(0, 153, 204);
     image(imgs[tmpCard.getValue()],tmpCard.getX(),tmpCard.getY());
     //noTint();
@@ -440,6 +347,17 @@ void mousePressed(){
       tmp = tmp.getNext();
     } 
   }
+
+  if (play) {
+    clicked = true;
+  }
+  
+  if (overSpefCard()!=null) {
+      Node tmpCard = overSpefCard();
+      tint(0, 153, 204);
+      image(imgs[tmpCard.getValue()],tmpCard.getX(),tmpCard.getY());
+      tinted = true;
+  }
   
   if (play) {
     int tmpX;
@@ -448,21 +366,17 @@ void mousePressed(){
       Node tmp = upCards.get(i);
       tmpX = tmp.getX();
       tmpY = tmp.getY();            /*----- the problem is w these ints??? -----*/
-      //text("egeege", 600, 600);
       text(str(tmpX), 600, 600);
-              fill(204, 102, 0);
-              rect(tmpX, tmpY, 500, 20, 20, 20, 0, 0);     //y = 890 = 900-10
-              rect((tmpX+495), tmpY, 20, 760-5, 0, 20, 20, 0);     //y = 890 = 900 - 10
-              rect(tmpX-10, tmpY, 20, 760-5, 20, 0, 0, 20);     //y = 890 = 900 - 10
-              rect((tmpX), (tmpY-25+760), 500, 20, 0, 0, 20, 20);     //y = 865 = 900 - 35
+      fill(204, 102, 0);
+      rect(tmpX, tmpY, 500, 20, 20, 20, 0, 0);     //y = 890 = 900-10
+      rect((tmpX+495), tmpY, 20, 760-5, 0, 20, 20, 0);     //y = 890 = 900 - 10
+      rect(tmpX-10, tmpY, 20, 760-5, 20, 0, 0, 20);     //y = 890 = 900 - 10
+      rect((tmpX), (tmpY-25+760), 500, 20, 0, 0, 20, 20);     //y = 865 = 900 - 35
       if (overCard(tmpX, tmpY)) {
         clicked = true;
         tmpCard = tmp;
-        textSize(3564);
-        text("TINTTTTNUTNU",800,800);
         tint(0, 153, 204);
-        image(imgs[tmp.getValue()],tmpX, tmpY);
-        
+        image(imgs[tmp.getValue()],tmpX, tmpY);       
         // width card = 500
         // length card = 760
         fill(204, 102, 0);
@@ -473,14 +387,37 @@ void mousePressed(){
       }
     }
   }
+  
+  
+  if (tinted) {
+    if (overSpefCard()!=null) { 
+      Node tmp = overSpefCard();
+      tmp.setNext(tmpCard);         /*------------- this is for testing purposes only, need to change this--------*/
+      //tableaus[tmpCard.getT()].remove();
+      tmpCard = null;
+      tinted = false;
+    }
+  }
 
 }
 
-
-
-
-
-
+Node overSpefCard() {
+    int tmpX;
+    int tmpY;
+    for (int i = 0; i<upCards.size(); i++) {
+      Node tmp = upCards.get(i);
+      tmpX = tmp.getX();
+      tmpY = tmp.getY();
+      textSize(50);
+      text("A",tmpX,tmpY);
+      text("B",mouseX*4,mouseY*4);           // why is it *4???????? this makes no sense, but it works
+      if (mouseX*4 >= tmpX && mouseX*4 <= (tmpX+500)/1 && mouseY*4 >= tmpY && mouseY*4 <= (tmpY+760)/1) {
+        textSize(264);
+        return tmp;
+      }
+    }
+    return null;
+}
 
 void setupPlay() {
   int posY = 150;
@@ -499,6 +436,7 @@ void setupPlay() {
       }
       tmp.setX(c);
       tmp.setY(posY);
+      tmp.setT(i);
       tmp = tmp.getNext();
       posY=posY+150;
     }
@@ -514,6 +452,7 @@ void setupPlay() {
   
   // width card = 500
   // length card = 760
+  /*
   fill(204, 102, 0);
   rect(column1, 890, 500, 20, 20, 20, 0, 0);
   rect((column1+495), 890, 20, 760-5, 0, 20, 20, 0);
@@ -522,6 +461,7 @@ void setupPlay() {
   textSize(100);
   text("testing^", 160, 1800);
   noFill();
+  */
 }
 
 void makeDeck(int startpos) {
@@ -657,6 +597,7 @@ class Node {
   
   int x;
   int y;
+  int t; //tableau index
   
   PImage card;
   //String cardname;
@@ -707,6 +648,14 @@ class Node {
     return y;
   }
   
+  void setT(int T) {
+    t = T;
+  }
+  
+  int getT() {
+    return t;
+  }
+  
   boolean getTinted() {
     return tinted;
   }
@@ -749,6 +698,8 @@ class LL {
   
   // remove last card in tableau (player initiated) -- need to write this
   boolean remove() {
+    Node tmp = getLast();
+    tmp = null;
     return true;
   }
     
