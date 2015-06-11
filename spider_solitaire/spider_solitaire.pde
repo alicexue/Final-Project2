@@ -3,8 +3,7 @@
 
 // need to fix "go back to menu" function
 // we need to figure out how the point system works
-// adding from the stock works the first time when clicked, but not the second time
-// remove cards from upCards
+// need to fix glitch where the last card in tableau disappears 
 
 // for the initial setup
 // the tableaus will be in an array
@@ -23,8 +22,7 @@
 // other 50 cards are in the stock
 
 // easy: only one suit (spades)
-// intermediate: two suits (spades and hearts)
-// difficult: four suits
+
 
 int count = 0;
 
@@ -39,8 +37,11 @@ int listPos = 0;
 PImage[] imgs = new PImage[14];
 int[] columns = new int[10];
 
+boolean illegalmove = false;
+
 ArrayList<Node> upCards = new ArrayList<Node>();
 Node tmpCard;
+
 
 // width card = 500
 // length card = 760
@@ -175,62 +176,66 @@ void setup1() {
 }
 
 void draw() {
-  if (!play)
+  if (!play) {
     update(mouseX, mouseY);
-  if (inst == true) {
-    //resetBooleans();
-    inst = true;
-    background(0,0,102);
-    textSize(20);
-    text("Instructions", 700, 300);
-    menuC = color(255,0,0);
-    menuX = 700;
-    menuY = 500;
-    menuL = 200;
-    menuH = 50;
-    rect(menuX, menuY, menuL, menuH);
-    textSize(20);
-    text("Go back to the menu", 700, 500);
-  }
-  if (start == true) {
-    //resetBooleans();
-    start = true;
-    background(0,0,102);
-    textSize(20);
-    text("Start", 700, 300);
-    circlePlayC = color(255,0,0);
-    circlePlayX = 700;
-    circlePlayY = 400;
-    circlePlaySize = 100;
-    ellipse(circlePlayX, circlePlayY, circlePlaySize, circlePlaySize);
-    textSize(20);
-    text("PLAY!",600,400);
-    menuC = color(255,0,0);
-    menuX = 700;
-    menuY = 500;
-    menuL = 200;
-    menuH = 50;
-    rect(menuX, menuY, menuL, menuH);
-    textSize(20);
-    text("Go back to the menu", 700, 500);
-  }
-  if (menuI == true) {
-    //resetBooleans();
-    menuI = true;
-    setup1();
-  }
-  if (menuS == true) {
-    //resetBooleans();
-    menuS = true;
-    setup1();
-  }
-  if (circlePlay == true) {
-    circlePlay = false;
-    play = true;
-    background(51,153,0);
-    setupGame();
+    if (inst == true) {
+      //resetBooleans();
+      inst = true;
+      background(0,0,102);
+      textSize(20);
+      text("Instructions", 700, 300);
+      menuC = color(255,0,0);
+      menuX = 700;
+      menuY = 500;
+      menuL = 200;
+      menuH = 50;
+      rect(menuX, menuY, menuL, menuH);
+      textSize(20);
+      text("Go back to the menu", 700, 500);
+    }
+    if (start == true) {
+      //resetBooleans();
+      start = true;
+      background(0,0,102);
+      textSize(20);
+      text("Start", 700, 300);
+      circlePlayC = color(255,0,0);
+      circlePlayX = 700;
+      circlePlayY = 400;
+      circlePlaySize = 100;
+      ellipse(circlePlayX, circlePlayY, circlePlaySize, circlePlaySize);
+      textSize(20);
+      text("PLAY!",600,400);
+      menuC = color(255,0,0);
+      menuX = 700;
+      menuY = 500;
+      menuL = 200;
+      menuH = 50;
+      rect(menuX, menuY, menuL, menuH);
+      textSize(20);
+      text("Go back to the menu", 700, 500);
+    }
+    if (menuI == true) {
+      //resetBooleans();
+      menuI = true;
+      setup1();
+    }
+    if (menuS == true) {
+      //resetBooleans();
+      menuS = true;
+      setup1();
+    }  
+    if (circlePlay == true) {
+      circlePlay = false;
+      play = true;
+      background(51,153,0);
+      setupGame();
+      //scale(.25);
+      setupPlay();
+    }
   } 
   if (play) {
+    scale(.25);
     setupPlay();
     textSize(235);
     text(str(count),236+(count*5),124);
@@ -305,7 +310,6 @@ boolean overCard(int x, int y){
     }
 }
 
-
 void mousePressed(){ 
   if (rectInstOver == true){
     resetBooleans();
@@ -328,8 +332,6 @@ void mousePressed(){
     circlePlay = true;
   }
   
-  // click on stock
-  // this only works when clicked once when game begins but not the next time -- need to fix
   if (overCard(column1, 2200) && !stock.isEmpty()) {
     addFromStock(); 
     setupPlay();
@@ -350,30 +352,17 @@ void mousePressed(){
   }
   */
   
-  
-  if (tinted) {
-    textSize(235);
-    text("tinted",236,2377);
-    if (overSpefCard()!=null) { 
-      Node tmp = overSpefCard();
-      tmp.setNext(tmpCard);       /*------------- this is for testing purposes only, need to change this--------*/
-      tableaus[tmpCard.getT()].remove();
-      tableaus[tmpCard.getT()].getLast().setFace(true);
-      textSize(234);
-      text("HELLO",236,124);
-      tmpCard = null;
-      tinted = false;
-      //setupPlay();
-    }
-  }
-  
+  /*
   //if tinted = false?
   if (tinted = false && overSpefCard()!=null) {
       Node tmpCard = overSpefCard();
-      tint(0, 153, 204);
-      image(imgs[tmpCard.getValue()],tmpCard.getX(),tmpCard.getY());
+      //tint(0, 153, 204);
+      //image(imgs[tmpCard.getValue()],tmpCard.getX(),tmpCard.getY());
+      tmpCard.setTinted(true);
       tinted = true;
+      clicked = true;
   }
+  */
   
   if (play) {
     int tmpX;
@@ -382,26 +371,47 @@ void mousePressed(){
       Node tmp = upCards.get(i);
       tmpX = tmp.getX();
       tmpY = tmp.getY();            /*----- the problem is w these ints??? -----*/
-      text(str(tmpX), 600, 600);
+      /*
       fill(204, 102, 0);
       rect(tmpX, tmpY, 500, 20, 20, 20, 0, 0);     //y = 890 = 900-10
       rect((tmpX+495), tmpY, 20, 760-5, 0, 20, 20, 0);     //y = 890 = 900 - 10
       rect(tmpX-10, tmpY, 20, 760-5, 20, 0, 0, 20);     //y = 890 = 900 - 10
       rect((tmpX), (tmpY-25+760), 500, 20, 0, 0, 20, 20);     //y = 865 = 900 - 35
+      */
       if (overCard(tmpX, tmpY)) {
-        clicked = true;
-        tmpCard = tmp;
-        tint(0, 153, 204);
-        image(imgs[tmp.getValue()],tmpX, tmpY);       
+          if (!tinted) {
+            tmpCard = tmp;
+            tmp.setTinted(true);
+            tinted = true;
+          } else if (tinted) {
+            if (overSpefCard()!=null) { 
+              Node tmp1 = overSpefCard();
+              tableaus[tmpCard.getT()].removeL();
+              tableaus[tmpCard.getT()].getLast().setFace(true);
+              tmp1.setNext(tmpCard);
+              
+              // problem with remove is you can't move columns, but then without it the columns are moved correctly
+              upCards.remove(i);
+              
+              upCards.add(tableaus[tmpCard.getT()].getLast());              
+              tmpCard.setT(tmpCard.getT()+1);
+              tmpCard.setTinted(false);
+              tmpCard = null;
+              tinted = false;
+            }
+        }
         // width card = 500
         // length card = 760
+        /*
         fill(204, 102, 0);
         rect(tmpX, tmpY, 500, 20, 20, 20, 0, 0);     //y = 890 = 900-10
         rect((tmpX+495), tmpY, 20, 760-5, 0, 20, 20, 0);     //y = 890 = 900 - 10
         rect(tmpX-10, tmpY, 20, 760-5, 20, 0, 0, 20);     //y = 890 = 900 - 10
         rect((tmpX), (tmpY-25+760), 500, 20, 0, 0, 20, 20);     //y = 865 = 900 - 35
+        */
       }
     }
+    setupPlay();
   }
   
 }
@@ -422,13 +432,17 @@ Node overSpefCard() {
 }
 
 void setupPlay() {
+  background(51,153,0);
   int posY = 150;
-  scale(.25);
+  //scale(.25);
   for (int i = 0; i<tableaus.length; i++) {
     Node tmp = tableaus[i].getFirst();
     while (tmp != null) {
       if (!tmp.faceUp()) {
         tint(0, 0, 0, 252);
+      }
+      if (tmp.getTinted()) {
+        tint(0, 153, 204);
       }
       PImage tmpI = imgs[tmp.getValue()];
       int c = columns[i];
@@ -448,7 +462,6 @@ void setupPlay() {
     Node stocktmp = stock.get(0);
     tint(0, 0, 0, 252);
     image(imgs[stocktmp.getValue()],column1,2200);
-    //noTint();
   }
   
   
@@ -464,6 +477,12 @@ void setupPlay() {
   text("testing^", 160, 1800);
   noFill();
   */
+  
+  
+  if (illegalmove) {
+    textSize(100);
+    text("That is not a legal move! Please refer to the instructions if you're not sure why.", 800, 2300);
+  }
 }
 
 void makeDeck(int startpos) {
@@ -511,7 +530,7 @@ void setupGame() {
         if (j==5) 
           tmp.setFace(true);
           */
-        tableaus[i].add(tmp);
+        tableaus[i].addN(tmp);
       }
     } else {
       for (int j = 1; j < 5; j++) {
@@ -520,7 +539,7 @@ void setupGame() {
         if (j==4) 
           tmp.setFace(true);
           */
-        tableaus[i].add(tmp);
+        tableaus[i].addN(tmp);
       }
     }
   }  
@@ -548,7 +567,7 @@ void addFromStock() {
      LL l = tableaus[i];
      Node n = stock.get(0);
      n.setFace(true);
-     l.add(n);
+     l.addN(n);
      upCards.add(n);
      stock.remove(0);
   }
@@ -673,13 +692,6 @@ class Node {
       tinted = false;
   }
   
-  /*
-  void setImage() {
-    String s = Integer.toString(value);
-    cardname = s+".png";
-  }
-  */
-  
   PImage getCard() {  
     return imgs[value]; 
   }
@@ -689,13 +701,12 @@ class Node {
   
 class LL {
   Node l;
-  Node last;
-  
+
   LL(Node n) {
     l = n;
   }
   
-  boolean add(Node n) {
+  boolean addN(Node n) {
     if (l==null) 
       l = n;
     else
@@ -703,9 +714,17 @@ class LL {
     return true;
   }
   
-  // remove last card in tableau (player initiated) -- need to write this
-  boolean remove() {
-    last = null;
+  // remove last card in tableau 
+  boolean removeL() {
+    Node tmp = l;
+    if (tmp.getNext()==null) {
+      tmp.setNext(null);
+    } else {
+      while (tmp.getNext().getNext()!=null) {
+        tmp = tmp.getNext();
+      }
+      tmp.setNext(null);
+    }
     return true;
   }
     
@@ -718,7 +737,6 @@ class LL {
     while (tmp.getNext() != null) {
       tmp = tmp.getNext();
     }
-    last = tmp;
     return tmp;
   }
     
