@@ -26,6 +26,8 @@
 // intermediate: two suits (spades and hearts)
 // difficult: four suits
 
+int count = 0;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -230,10 +232,10 @@ void draw() {
   } 
   if (play) {
     setupPlay();
-    textSize(100);
-    text("playing now",466,434);
-   }  
-   
+    textSize(235);
+    text(str(count),236+(count*5),124);
+    count++;
+  }  
 }
 
 void resetBooleans() {
@@ -274,8 +276,6 @@ void update(int x, int y) {
     circlePlayOver = true;    
   }     
 }
-
-
 
 boolean overRect(int x, int y, int w, int h) {
   if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h) {
@@ -335,8 +335,9 @@ void mousePressed(){
     setupPlay();
   }
   
+  /*
   if (clicked) {
-    textSize(3564);
+    textSize(356);
     text("CLICKED@!",800,800);
     tint(0, 153, 204);
     image(imgs[tmpCard.getValue()],tmpCard.getX(),tmpCard.getY());
@@ -347,12 +348,27 @@ void mousePressed(){
       tmp = tmp.getNext();
     } 
   }
-
-  if (play) {
-    clicked = true;
+  */
+  
+  
+  if (tinted) {
+    textSize(235);
+    text("tinted",236,2377);
+    if (overSpefCard()!=null) { 
+      Node tmp = overSpefCard();
+      tmp.setNext(tmpCard);       /*------------- this is for testing purposes only, need to change this--------*/
+      tableaus[tmpCard.getT()].remove();
+      tableaus[tmpCard.getT()].getLast().setFace(true);
+      textSize(234);
+      text("HELLO",236,124);
+      tmpCard = null;
+      tinted = false;
+      //setupPlay();
+    }
   }
   
-  if (overSpefCard()!=null) {
+  //if tinted = false?
+  if (tinted = false && overSpefCard()!=null) {
       Node tmpCard = overSpefCard();
       tint(0, 153, 204);
       image(imgs[tmpCard.getValue()],tmpCard.getX(),tmpCard.getY());
@@ -388,17 +404,6 @@ void mousePressed(){
     }
   }
   
-  
-  if (tinted) {
-    if (overSpefCard()!=null) { 
-      Node tmp = overSpefCard();
-      tmp.setNext(tmpCard);         /*------------- this is for testing purposes only, need to change this--------*/
-      //tableaus[tmpCard.getT()].remove();
-      tmpCard = null;
-      tinted = false;
-    }
-  }
-
 }
 
 Node overSpefCard() {
@@ -407,10 +412,7 @@ Node overSpefCard() {
     for (int i = 0; i<upCards.size(); i++) {
       Node tmp = upCards.get(i);
       tmpX = tmp.getX();
-      tmpY = tmp.getY();
-      textSize(50);
-      text("A",tmpX,tmpY);
-      text("B",mouseX*4,mouseY*4);           // why is it *4???????? this makes no sense, but it works
+      tmpY = tmp.getY();          // why is it *4???????? this makes no sense, but it works
       if (mouseX*4 >= tmpX && mouseX*4 <= (tmpX+500)/1 && mouseY*4 >= tmpY && mouseY*4 <= (tmpY+760)/1) {
         textSize(264);
         return tmp;
@@ -620,6 +622,10 @@ class Node {
     return value;
   }
   
+  void setValue(int n) {
+    value = n;
+  }
+  
   boolean faceUp() {
     return up;
   }
@@ -683,6 +689,7 @@ class Node {
   
 class LL {
   Node l;
+  Node last;
   
   LL(Node n) {
     l = n;
@@ -698,8 +705,7 @@ class LL {
   
   // remove last card in tableau (player initiated) -- need to write this
   boolean remove() {
-    Node tmp = getLast();
-    tmp = null;
+    last = null;
     return true;
   }
     
@@ -712,6 +718,7 @@ class LL {
     while (tmp.getNext() != null) {
       tmp = tmp.getNext();
     }
+    last = tmp;
     return tmp;
   }
     
