@@ -25,5 +25,8 @@ Spider Solitaire - Emily Xu and Alice Xue
 6/9/15: worked on how to tint cards and fix bugs (AX)
         worked on outline of cards when clicked (EX)
 
-6/10/15: worked on fixing bugs with outlines of cards?? (AXE)
+6/10/15: worked on fixing bugs with outlines of cards (AXE)
         able to tint clicked cards but can't move them yet (AX)
+        
+6/11/15: worked on moving cards, collected notes for music (AXE)
+        finally able to move cards! however, there are a lot of cases yet unaccounted for (AX)
