@@ -31,3 +31,6 @@ Spider Solitaire - Emily Xu and Alice Xue
         
 6/11/15: worked on moving cards, collected notes for music (AXE)
         finally able to move cards! however, there are a lot of cases yet unaccounted for (AX)
+
+6/12/15: worked on moving multiple cards at the same time (AX)
+        worked on buttons for music (EX)
