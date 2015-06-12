@@ -384,21 +384,56 @@ void mousePressed(){
             tmp.setTinted(true);
             tinted = true;
           } else if (tinted) {
-            if (overSpefCard()!=null) { 
-              Node tmp1 = overSpefCard();
-              tableaus[tmpCard.getT()].removeL();
+            if (overSpefCard()!=null) {
+              Node indextmp = tmpCard;
+              while (indextmp!=null) {
+                tableaus[tmpCard.getT()].removeL();
+                indextmp = indextmp.getNext();
+              } 
+              tableaus[tmpCard.getT()].removeL(); // edit this???
+              Node tmp1 = overSpefCard(); // the card that is clicked - to be moved onto
+              //tableaus[tmpCard.getT()].removeL();
               tableaus[tmpCard.getT()].getLast().setFace(true);
-              tmp1.setNext(tmpCard);
+              indextmp = tmpCard;
+              while (indextmp!=null) {
+                tmp1.setNext(indextmp);
+                indextmp.setT(indextmp.getT()+1);
+                tmp1 = tmp1.getNext();
+                
+                indextmp = indextmp.getNext();
+              }
               
               // problem with remove is you can't move columns, but then without it the columns are moved correctly
-              upCards.remove(i);
+              //upCards.remove(i);
               
               upCards.add(tableaus[tmpCard.getT()].getLast());              
-              tmpCard.setT(tmpCard.getT()+1);
+              tmpCard.setT(tmpCard.getT()+1); //////// not plus 1... i think
               tmpCard.setTinted(false);
               tmpCard = null;
               tinted = false;
             }
+            /*
+             if (overCard(tmpX, tmpY)) {
+                if (!tinted) {
+                  tmpCard = tmp;
+                  tmp.setTinted(true);
+                  tinted = true;
+                } else if (tinted) {
+                if (overSpefCard()!=null) {
+                  Node tmp1 = overSpefCard();
+                  tableaus[tmpCard.getT()].removeL();
+                  tableaus[tmpCard.getT()].getLast().setFace(true);
+                  tmp1.setNext(tmpCard);
+                  // problem with remove is you can't move columns, but then without it the columns are moved correctly
+                  upCards.remove(i);
+                  upCards.add(tableaus[tmpCard.getT()].getLast());
+                  tmpCard.setT(tmpCard.getT()+1);
+                  tmpCard.setTinted(false);
+                  tmpCard = null;
+                  tinted = false;
+                }
+                }
+                */
         }
         // width card = 500
         // length card = 760
@@ -415,6 +450,8 @@ void mousePressed(){
   }
   
 }
+
+// fix two while loops - overspefcard
 
 Node overSpefCard() {
     int tmpX;
@@ -434,7 +471,6 @@ Node overSpefCard() {
 void setupPlay() {
   background(51,153,0);
   int posY = 150;
-  //scale(.25);
   for (int i = 0; i<tableaus.length; i++) {
     Node tmp = tableaus[i].getFirst();
     while (tmp != null) {
