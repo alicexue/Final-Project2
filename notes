@@ -5,3 +5,41 @@ https://www.youtube.com/watch?v=DEeAN471boQ
 
 funk music
 https://www.youtube.com/watch?v=XvMzLnl9wk8
+
+create button switch thingy, one side for medieval music, other for funk music
+
+int sound1X, sound1Y;
+int sound2X, sound2Y;
+int soundSize = 100; //diameter rect
+color sound1, sound1H, sound2, sound2H;
+color soundLight, soundDark;
+color soundHlight, soundHdark;
+boolean sound1Over = false;
+boolean sound2Over = false;
+
+//need to do
+soundLight = color();
+soundDark = color();
+soundHlight = color();
+soundHdark = color();
+
+
+
+//in mousePressed()
+if (sound1Over = true){
+	sound1 = soundDark;
+	sound1H = soundHdark;
+	sound2 = soundLight;
+	sound2H = soundHlight;
+}
+else{
+	sound1 = soundLight;
+	sound1H = soundHlight;
+	sound2 = soundDark;
+	sound2H = soundHdark;
+}
+
+
+//exists already
+boolean overRect(int x, int y, int width, int height){
+}
