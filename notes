@@ -1,4 +1,8 @@
+colors
+https://web.njit.edu/~kevin/rgb.txt.html
 
+forest green (34,139,34)
+green (0,128,0)
 
 medieval music
 https://www.youtube.com/watch?v=DEeAN471boQ
@@ -8,21 +12,47 @@ https://www.youtube.com/watch?v=XvMzLnl9wk8
 
 create button switch thingy, one side for medieval music, other for funk music
 
+
 int sound1X, sound1Y;
 int sound2X, sound2Y;
-int soundSize = 100; //diameter rect
+int soundL = 100; 
+int soundW = 33;
 color sound1, sound1H, sound2, sound2H;
 color soundLight, soundDark;
 color soundHlight, soundHdark;
 boolean sound1Over = false;
 boolean sound2Over = false;
 
-//need to do
-soundLight = color();
-soundDark = color();
-soundHlight = color();
-soundHdark = color();
 
+//in setup()
+soundLight = color(0,191,255);
+soundDark = color(24,116,205);
+soundHlight = color(0,191,255);
+soundHdark = color(24,116,205);
+sound1X = 600;
+sound1Y = 400;
+sound2X = 800;
+sound2Y = 400;
+sound1 = color(186,186,186);
+sound1H = color(89,89,89);
+sound2 = color(186,186,186);
+sound2H = color(89,89,89);
+
+
+//in draw()
+rect(sound1X, sound1Y, soundL, soundW);
+rect(sound2X, sound2Y, soundL, soundW);
+
+
+//in update()
+if (overRect(sound1X, sound1Y, soundL, soundW)){
+	sound1Over = true;
+	sound2Over = false;
+}
+if (overRect(sound2X, sound2Y, soundL, soundW)){
+	sound1Over = false;
+	sound2Over = true;
+}
 
 
 //in mousePressed()
@@ -32,7 +62,7 @@ if (sound1Over = true){
 	sound2 = soundLight;
 	sound2H = soundHlight;
 }
-else{
+if (sound2Over = true){
 	sound1 = soundLight;
 	sound1H = soundHlight;
 	sound2 = soundDark;
