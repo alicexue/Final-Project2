@@ -23,7 +23,6 @@
 
 // easy: only one suit (spades)
 
-
 int count = 0;
 
 import java.util.ArrayList;
@@ -230,7 +229,6 @@ void draw() {
       play = true;
       background(51,153,0);
       setupGame();
-      //scale(.25);
       setupPlay();
     }
   } 
@@ -283,32 +281,50 @@ void update(int x, int y) {
 }
 
 boolean overRect(int x, int y, int w, int h) {
-  if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h) {
+  if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h) 
     return true;
-  }
   return false;
 }
 
 boolean overCircle(int x, int y, int diameter){
   float disX = x - mouseX;
   float disY = y - mouseY;
-  if (sqrt(sq(disX) + sq(disY)) < diameter/2) {
+  if (sqrt(sq(disX) + sq(disY)) < diameter/2) 
     return true;
-  } else {
+  else 
     return false;
-  }
 }
 
 boolean overCard(int x, int y){
     // width card = 500
     // length card = 760
-    if (mouseX*4 >= x/1 && mouseX*4 <= (x+500)/1 && mouseY*4 >= y/1 && mouseY*4 <= (y+760)/1){
+    if (mouseX*4 >= x && mouseX*4 <= x+500 && mouseY*4 >= y && mouseY*4 <= y+760)
       return true;
-    }
-    else {
+    else 
       return false;
-    }
 }
+
+Node overSpefCard() {
+    int tmpX;
+    int tmpY;
+    for (int i = 0; i<upCards.size(); i++) {
+      Node tmp = upCards.get(i);
+      tmpX = tmp.getX();
+      tmpY = tmp.getY();          
+      if (mouseX*4 >= tmpX && mouseX*4 <= (tmpX+500)/1 && mouseY*4 >= tmpY && mouseY*4 <= (tmpY+760)/1) 
+        return tmp;
+    }
+    return null;
+}
+
+boolean overPartCard(int x, int y) {
+  if (mouseX*4 >= x && mouseX*4 <= x+500 && mouseY*4 >= y && mouseY <= y+120) 
+    return true;
+  else 
+    return false;
+}
+
+// for moving multiple cards: write another overCard function for the section of card, or see if ordering of arraylist will help change it
 
 void mousePressed(){ 
   if (rectInstOver == true){
@@ -330,150 +346,92 @@ void mousePressed(){
   if (circlePlayOver == true) {
     resetBooleans();
     circlePlay = true;
-  }
-  
-  if (overCard(column1, 2200) && !stock.isEmpty()) {
-    addFromStock(); 
-    setupPlay();
-  }
-  
-  /*
-  if (clicked) {
-    textSize(356);
-    text("CLICKED@!",800,800);
-    tint(0, 153, 204);
-    image(imgs[tmpCard.getValue()],tmpCard.getX(),tmpCard.getY());
-    //noTint();
-    Node tmp = tmpCard.getNext();
-    while (tmp!=null) {
-      image(imgs[tmp.getValue()],tmpCard.getX(),tmpCard.getY());
-      tmp = tmp.getNext();
-    } 
-  }
-  */
-  
-  /*
-  //if tinted = false?
-  if (tinted = false && overSpefCard()!=null) {
-      Node tmpCard = overSpefCard();
-      //tint(0, 153, 204);
-      //image(imgs[tmpCard.getValue()],tmpCard.getX(),tmpCard.getY());
-      tmpCard.setTinted(true);
-      tinted = true;
-      clicked = true;
-  }
-  */
-  
-  if (play) {
-    int tmpX;
-    int tmpY;
-    for (int i = 0; i<upCards.size(); i++) {
-      Node tmp = upCards.get(i);
-      tmpX = tmp.getX();
-      tmpY = tmp.getY();            /*----- the problem is w these ints??? -----*/
-      /*
-      fill(204, 102, 0);
-      rect(tmpX, tmpY, 500, 20, 20, 20, 0, 0);     //y = 890 = 900-10
-      rect((tmpX+495), tmpY, 20, 760-5, 0, 20, 20, 0);     //y = 890 = 900 - 10
-      rect(tmpX-10, tmpY, 20, 760-5, 20, 0, 0, 20);     //y = 890 = 900 - 10
-      rect((tmpX), (tmpY-25+760), 500, 20, 0, 0, 20, 20);     //y = 865 = 900 - 35
-      */
-      if (overCard(tmpX, tmpY)) {
-          if (!tinted) {
-            tmpCard = tmp;
-            tmp.setTinted(true);
-            tinted = true;
-          } else if (tinted) {
-            if (overSpefCard()!=null) {
-              Node indextmp = tmpCard;
-              while (indextmp!=null) {
-                tableaus[tmpCard.getT()].removeL();
-                indextmp = indextmp.getNext();
-              } 
-              tableaus[tmpCard.getT()].removeL(); // edit this???
-              Node tmp1 = overSpefCard(); // the card that is clicked - to be moved onto
-              //tableaus[tmpCard.getT()].removeL();
-              tableaus[tmpCard.getT()].getLast().setFace(true);
-              indextmp = tmpCard;
-              while (indextmp!=null) {
-                tmp1.setNext(indextmp);
-                indextmp.setT(indextmp.getT()+1);
-                tmp1 = tmp1.getNext();
-                
-                indextmp = indextmp.getNext();
-              }
-              
-              // problem with remove is you can't move columns, but then without it the columns are moved correctly
-              //upCards.remove(i);
-              
-              upCards.add(tableaus[tmpCard.getT()].getLast());              
-              tmpCard.setT(tmpCard.getT()+1); //////// not plus 1... i think
-              tmpCard.setTinted(false);
-              tmpCard = null;
-              tinted = false;
-            }
-            /*
-             if (overCard(tmpX, tmpY)) {
-                if (!tinted) {
-                  tmpCard = tmp;
-                  tmp.setTinted(true);
-                  tinted = true;
-                } else if (tinted) {
-                if (overSpefCard()!=null) {
-                  Node tmp1 = overSpefCard();
-                  tableaus[tmpCard.getT()].removeL();
-                  tableaus[tmpCard.getT()].getLast().setFace(true);
-                  tmp1.setNext(tmpCard);
-                  // problem with remove is you can't move columns, but then without it the columns are moved correctly
-                  upCards.remove(i);
-                  upCards.add(tableaus[tmpCard.getT()].getLast());
-                  tmpCard.setT(tmpCard.getT()+1);
-                  tmpCard.setTinted(false);
-                  tmpCard = null;
-                  tinted = false;
-                }
-                }
-                */
+  }  
+  if (play) {          
+    if (overCard(column1, 2200) && !stock.isEmpty()) {
+      addFromStock();
+      illegalmove = false; 
+      setupPlay();
+    } else {      
+      int tmpX = 0;
+      int tmpY = 0;
+      Node tmp = null;
+      for (int i = 0; i<upCards.size(); i++) {
+        tmp = upCards.get(i);
+        tmpX = tmp.getX();
+        tmpY = tmp.getY();
+        if (overCard(tmpX,tmpY))
+          break;
+      }    
+      if (overSpefCard()!=null) {
+        if (!tinted) {
+          tmpCard = tmp;
+          tmp.setTinted(true);
+          tinted = true;
+          illegalmove = false;
+          setupPlay();
+        } else if (validMove(tmpCard,tmp)){
+          Node tmp1 = tmp;
+          Node indextmp = tmpCard;
+          int numT = tmpCard.getT();
+          while (indextmp!=null) {
+            tableaus[numT].removeL();
+            indextmp = indextmp.getNext();
+          }         
+          if (tableaus[numT].getFirst()!=null) {
+            tableaus[numT].getLast().setFace(true);         
+            upCards.add(tableaus[numT].getLast());
+          } 
+          tmp1.setNext(tmpCard);          
+          tmpCard.setTinted(false);
+          tmpCard = null;
+          tinted = false;
+          setupPlay();
+        } else if (!validMove(tmpCard,tmp)) {
+          illegalmove = true;
+          if (tmpCard!=null) { 
+            tmpCard.setTinted(false);
+            tinted = false;
+          }
+          tmpCard = null;
+          setupPlay();
         }
-        // width card = 500
-        // length card = 760
-        /*
-        fill(204, 102, 0);
-        rect(tmpX, tmpY, 500, 20, 20, 20, 0, 0);     //y = 890 = 900-10
-        rect((tmpX+495), tmpY, 20, 760-5, 0, 20, 20, 0);     //y = 890 = 900 - 10
-        rect(tmpX-10, tmpY, 20, 760-5, 20, 0, 0, 20);     //y = 890 = 900 - 10
-        rect((tmpX), (tmpY-25+760), 500, 20, 0, 0, 20, 20);     //y = 865 = 900 - 35
-        */
+     } else {
+          for (int i = 0; i<columns.length; i++) {
+            if (tableaus[i].getFirst() == null) {
+              if (overCard(columns[i],150)) {
+                tableaus[i].addN(tmpCard);
+              }
+            }
+          }
+          Node indextmp = tmpCard;
+          int numT = tmpCard.getT();
+          while (indextmp!=null) {
+            tableaus[numT].removeL();
+            indextmp = indextmp.getNext();
+          }         
+          if (tableaus[numT].getFirst()!=null) {
+            tableaus[numT].getLast().setFace(true);         
+            upCards.add(tableaus[numT].getLast());
+          } 
+          tmpCard.setTinted(false);
+          tmpCard = null;
+          tinted = false;
+          setupPlay();
+        }
+        setupPlay();
       }
-    }
-    setupPlay();
+     
+}
   }
-  
-}
 
-// fix two while loops - overspefcard
-
-Node overSpefCard() {
-    int tmpX;
-    int tmpY;
-    for (int i = 0; i<upCards.size(); i++) {
-      Node tmp = upCards.get(i);
-      tmpX = tmp.getX();
-      tmpY = tmp.getY();          // why is it *4???????? this makes no sense, but it works
-      if (mouseX*4 >= tmpX && mouseX*4 <= (tmpX+500)/1 && mouseY*4 >= tmpY && mouseY*4 <= (tmpY+760)/1) {
-        textSize(264);
-        return tmp;
-      }
-    }
-    return null;
-}
 
 void setupPlay() {
   background(51,153,0);
   int posY = 150;
   for (int i = 0; i<tableaus.length; i++) {
     Node tmp = tableaus[i].getFirst();
-    while (tmp != null) {
+    while (tmp!=null) {
       if (!tmp.faceUp()) {
         tint(0, 0, 0, 252);
       }
@@ -482,7 +440,11 @@ void setupPlay() {
       }
       PImage tmpI = imgs[tmp.getValue()];
       int c = columns[i];
-      image(tmpI,c,posY);
+      image(tmpI,c,posY); 
+        if (tmp.getNext()==null) {
+          textSize(100);
+          text("next null",tmp.getX(),tmp.getY());
+        }   
       if (!tmp.faceUp()){
         noTint();
       }
@@ -490,7 +452,7 @@ void setupPlay() {
       tmp.setY(posY);
       tmp.setT(i);
       tmp = tmp.getNext();
-      posY=posY+150;
+      posY=posY+120;
     }
     posY = 150;
   }
@@ -499,7 +461,6 @@ void setupPlay() {
     tint(0, 0, 0, 252);
     image(imgs[stocktmp.getValue()],column1,2200);
   }
-  
   
   // width card = 500
   // length card = 760
@@ -513,8 +474,7 @@ void setupPlay() {
   text("testing^", 160, 1800);
   noFill();
   */
-  
-  
+    
   if (illegalmove) {
     textSize(100);
     text("That is not a legal move! Please refer to the instructions if you're not sure why.", 800, 2300);
@@ -628,6 +588,15 @@ int completeTableau() {
   return tableauIndex;
 }
 
+boolean validMove(Node card1, Node card2) {
+  // move card1 to card 2
+  if (card1==null || card1 == null) 
+    return false;
+  if (card1.getValue()+1 == card2.getValue()) 
+    return true;   
+  return false;
+}
+
 // checks if multiple cards can be moved
 boolean validMultipleMove(Node card) {
   Node tmp = card;
@@ -727,12 +696,6 @@ class Node {
     else 
       tinted = false;
   }
-  
-  PImage getCard() {  
-    return imgs[value]; 
-  }
-   
-  
 }
   
 class LL {
@@ -753,8 +716,8 @@ class LL {
   // remove last card in tableau 
   boolean removeL() {
     Node tmp = l;
-    if (tmp.getNext()==null) {
-      tmp.setNext(null);
+    if (tmp==null || tmp.getNext()==null) {
+      l=null;
     } else {
       while (tmp.getNext().getNext()!=null) {
         tmp = tmp.getNext();
@@ -770,6 +733,9 @@ class LL {
     
   Node getLast() {
     Node tmp = l;
+    if (tmp == null) {
+      return null;
+    }
     while (tmp.getNext() != null) {
       tmp = tmp.getNext();
     }
