@@ -182,7 +182,16 @@ void draw() {
       inst = true;
       background(0,0,102);
       textSize(20);
-      text("Instructions", 700, 300);
+      text("Instructions", 600, 100);
+      text("The objective of spider solitaire is to complete as many tableaus as possible.", 80, 130);
+      text("What that entails is to complete columns of cards in decreasing order of value, from King to Ace.", 80, 160);
+      text("You are allowed to move cards between columns, but the value of the card you are moving must be one less than that of the card", 80, 190);
+      text("you are moving to.", 80, 220);
+      text("You are allowed to move multiple cards in a columns, but the values of each card must be in appropriate descending order.", 80, 250);
+      text("If there are no possible moves left, you may click the stock of cards on the bottom left.", 80, 280);
+      text("The stock will put one card on each column.", 80, 310);
+      text("There are a limited number of cards in the stock, however, so be wise with your decisions.",80,340);
+      text("Have fun!",600,390); 
       menuC = color(255,0,0);
       menuX = 700;
       menuY = 500;
@@ -317,14 +326,37 @@ Node overSpefCard() {
     return null;
 }
 
+Node overSpefCardT() {
+  int t = -1;
+  for (int i = 0; i<columns.length; i++) {
+    if (mouseX*4 >= columns[i] && mouseX*4 <= columns[i]+500) 
+      t = i;
+  } 
+  if (t!=-1) {
+    Node n = tableaus[t].getFirst();
+    Node m = tableaus[t].getLast();
+    if (overCard(m.getX(),m.getY())) 
+      return m;
+    while (n!=null){
+      Node tmp = n.getNext();
+      if (tmp!=null) {
+        if (n.faceUp() == true && overPartCard(mouseX*4, mouseY*4) && !overCard(tmp.getX(),tmp.getY())) {
+          return n;
+        }
+      }
+      n = n.getNext();
+    }
+  }
+  return null;
+}
+      
+
 boolean overPartCard(int x, int y) {
   if (mouseX*4 >= x && mouseX*4 <= x+500 && mouseY*4 >= y && mouseY <= y+120) 
     return true;
   else 
     return false;
 }
-
-// for moving multiple cards: write another overCard function for the section of card, or see if ordering of arraylist will help change it
 
 void mousePressed(){ 
   if (rectInstOver == true){
@@ -351,7 +383,6 @@ void mousePressed(){
     if (overCard(column1, 2200) && !stock.isEmpty()) {
       addFromStock();
       illegalmove = false; 
-      setupPlay();
     } else {      
       int tmpX = 0;
       int tmpY = 0;
@@ -363,6 +394,9 @@ void mousePressed(){
         if (overCard(tmpX,tmpY))
           break;
       }    
+      
+      tmp = overSpefCardT();
+      
       if (overSpefCard()!=null) {
         if (!tinted) {
           tmpCard = tmp;
@@ -372,18 +406,26 @@ void mousePressed(){
           setupPlay();
         } else if (validMove(tmpCard,tmp)){
           Node tmp1 = tmp;
-          Node indextmp = tmpCard;
           int numT = tmpCard.getT();
-          while (indextmp!=null) {
+          int numTmp = tmp.getT();
+          tmpCard.setTinted(false);       
+          // problem is that when multiple cards are moved, not all the cards are moved, just the first one
+          // what doesn't make sense is that tmpCard should be pointed to its next card (and this is shown in the setupPlay display)
+          // :( :( :(           
+          int c = 1;
+          tableaus[numTmp].addN(tmpCard);          
+          while (tmpCard.getNext()!=null) {
+            tmpCard = tmpCard.getNext();
+            c++;
+          }   
+          while (c>0) {
             tableaus[numT].removeL();
-            indextmp = indextmp.getNext();
-          }         
+            c--;
+          }          
           if (tableaus[numT].getFirst()!=null) {
             tableaus[numT].getLast().setFace(true);         
             upCards.add(tableaus[numT].getLast());
-          } 
-          tmp1.setNext(tmpCard);          
-          tmpCard.setTinted(false);
+          }         
           tmpCard = null;
           tinted = false;
           setupPlay();
@@ -394,7 +436,6 @@ void mousePressed(){
             tinted = false;
           }
           tmpCard = null;
-          setupPlay();
         }
      } else {
           for (int i = 0; i<columns.length; i++) {
@@ -404,27 +445,26 @@ void mousePressed(){
               }
             }
           }
-          Node indextmp = tmpCard;
-          int numT = tmpCard.getT();
-          while (indextmp!=null) {
-            tableaus[numT].removeL();
-            indextmp = indextmp.getNext();
-          }         
-          if (tableaus[numT].getFirst()!=null) {
-            tableaus[numT].getLast().setFace(true);         
-            upCards.add(tableaus[numT].getLast());
-          } 
-          tmpCard.setTinted(false);
-          tmpCard = null;
-          tinted = false;
-          setupPlay();
+          if (tmpCard!=null) {
+            Node indextmp = tmpCard;
+            int numT = tmpCard.getT();
+            while (indextmp!=null) {
+              tableaus[numT].removeL();
+              indextmp = indextmp.getNext();
+            }         
+            if (tableaus[numT].getFirst()!=null) {
+              tableaus[numT].getLast().setFace(true);         
+              upCards.add(tableaus[numT].getLast());
+            } 
+            tmpCard.setTinted(false);
+            tmpCard = null;
+            tinted = false;
+          }
         }
-        setupPlay();
       }
-     
-}
+     setupPlay();
   }
-
+}
 
 void setupPlay() {
   background(51,153,0);
@@ -474,6 +514,17 @@ void setupPlay() {
   text("testing^", 160, 1800);
   noFill();
   */
+ /* --------------------------------------------------------testing what the tmp card is ---------------------------------- */  
+  if (tmpCard!=null) {
+    noTint();
+    Node tmp = tmpCard;
+    int c = 100;
+    while (tmp!=null) {  
+      image(imgs[tmp.getValue()],2000+c,2000);
+      tmp = tmp.getNext();
+      c+=100;
+    }  
+  }  
     
   if (illegalmove) {
     textSize(100);
