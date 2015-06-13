@@ -34,4 +34,5 @@ Spider Solitaire - Emily Xu and Alice Xue
 
 6/12/15: worked on moving multiple cards at the same time (AX)
         worked on buttons for music (EX)
-f
+        worked on some glitches with moving cards and adding from stock (AX)
+
