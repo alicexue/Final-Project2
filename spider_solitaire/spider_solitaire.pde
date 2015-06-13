@@ -23,6 +23,18 @@
 
 // easy: only one suit (spades)
 
+
+//Imports sound library
+import ddf.minim.spi.*;
+import ddf.minim.signals.*;
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.ugens.*;
+import ddf.minim.effects.*;
+Minim minim;
+AudioPlayer soundMedieval, soundFunk;
+
+
 int count = 0;
 
 import java.util.ArrayList;
@@ -193,9 +205,9 @@ void setup1() {
   soundHlight = color(0,191,255);
   soundHdark = color(24,116,205);
   sound1X = 600;
-  sound1Y = 400;
+  sound1Y = 100;
   sound2X = 700;
-  sound2Y = 400;
+  sound2Y = 100;
   sound1 = color(186,186,186);
   sound1H = color(89,89,89);
   sound2 = color(186,186,186);
@@ -203,15 +215,20 @@ void setup1() {
   
     
   // sound stuff
-  stroke(sound1);
-  fill(sound1H);
+  stroke(color(89,89,89));
+  fill(color(186,186,186));
   rect(sound1X, sound1Y, soundL, soundW);
-  stroke(sound2);
-  fill(sound2H);
+  stroke(color(89,89,89));
+  fill(color(186,186,186));
   rect(sound2X, sound2Y, soundL, soundW);
   stroke(0);
   fill(255,255,255);
-
+  text("Pick your music:", 400,122);
+  text("Medievally   Funky", 600,90);
+  
+  minim = new Minim(this);
+  soundMedieval = minim.loadFile("MedievalMusic.wav");
+  soundFunk = minim.loadFile("FunkMusic.wav");
 }
 
 void draw() {
@@ -282,25 +299,34 @@ void draw() {
     }
     
     // sound stuff
-    if (picksound = true){
-      if (sound1Over = true){
-        fill(sound1);
-        stroke(sound1H);
+    if (picksound == true){
+      if (sound1Over == true){
+        //fill(sound1);
+        //stroke(sound1H);
+        fill(soundLight);
+        stroke(soundHlight);
         rect(sound1X, sound1Y, soundL, soundW);
-        fill(sound2);
-        stroke(sound2H);
+        //fill(sound2);
+        //stroke(sound2H);
+        fill(soundDark);
+        stroke(soundHdark);
         rect(sound2X, sound2Y, soundL, soundW);
         fill(255);
-        
+        stroke(0);
       }
-      if (sound2Over = true){
-        fill(sound2);
-        stroke(sound2H);
+      if (sound2Over == true){
+        //fill(sound2);
+        //stroke(sound2H);
+        fill(soundLight);
+        stroke(soundHlight);
         rect(sound2X, sound2Y, soundL, soundW);
-        fill(sound1);
-        stroke(sound1H);
+        //fill(sound1);
+        //stroke(sound1H);
+        fill(soundDark);
+        stroke(soundHdark);
         rect(sound1X, sound1Y, soundL, soundW);
         fill(255);
+        stroke(0);
       }
     }
   } 
@@ -355,14 +381,14 @@ void update(int x, int y) {
   
   
   // sound stuff
-  if (overRect(sound1X, sound1Y, soundL, soundW)){
+ /* if (overRect(sound1X, sound1Y, soundL, soundW)){
   sound1Over = true;
   sound2Over = false;
   }
   if (overRect(sound2X, sound2Y, soundL, soundW)){
     sound1Over = false;
     sound2Over = true;
-  }
+  }*/
 }
 
 boolean overRect(int x, int y, int w, int h) {
@@ -544,22 +570,56 @@ void mousePressed(){
   
   // sound stuff
  
-  
-  if (sound1Over == true || sound2Over == true){
+  if (overRect(sound1X, sound1Y, soundL, soundW) == true){
+      picksound = true;
+      sound1Over = true;
+      sound2Over = false;
+      sound1 = soundDark;
+      sound1H = soundHdark;
+      sound2 = soundLight;
+      sound2H = soundHlight;
+      
+    
+      //soundFunk = minim.loadFile("FunkMusic.wav");
+      soundFunk.close();
+      soundMedieval.close();
+      soundMedieval = minim.loadFile("MedievalMusic.wav");
+      soundMedieval.play();
+      //soundFunk.close();
+  }
+  if (overRect(sound2X, sound2Y, soundL, soundW) == true){
+      picksound = true;
+      sound2Over = true;
+      sound1Over = false;
+      sound2 = soundDark;
+      sound2H = soundHdark;
+      sound1 = soundLight;
+      sound1H = soundHlight;
+      
+      
+      //soundMedieval = minim.loadFile("MedievalMusic.wav");
+      soundMedieval.close();
+      soundFunk.close();
+      soundFunk = minim.loadFile("FunkMusic.wav");
+      soundFunk.play();
+      //soundMedieval.close();
+  }
+    
+ /* if (sound1Over == true || sound2Over == true){
     picksound = true;
-    if (sound1Over = true){
+    if (sound1Over == true){
       sound1 = soundDark;
       sound1H = soundHdark;
       sound2 = soundLight;
       sound2H = soundHlight;
     }
-    if (sound2Over = true){
+    if (sound2Over == true){
       sound1 = soundLight;
       sound1H = soundHlight;
       sound2 = soundDark;
       sound2H = soundHdark;
     }  
-  }
+  }*/
 }
 
 void setupPlay() {
