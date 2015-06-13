@@ -90,6 +90,19 @@ boolean clicked = false;
 
 boolean tinted = false;
 
+// sound stuff
+int sound1X, sound1Y;
+int sound2X, sound2Y;
+int soundL = 100; 
+int soundW = 33;
+color sound1, sound1H, sound2, sound2H;
+color soundLight, soundDark;
+color soundHlight, soundHdark;
+boolean sound1Over = false;
+boolean sound2Over = false;
+boolean picksound = false;
+
+
 void setupImgs() {
   imgs[0] = null;
   imgs[1] = img1;
@@ -172,6 +185,33 @@ void setup1() {
   
   setupImgs();
   setupColumns();
+  
+  
+  // sound stuff
+  soundLight = color(0,191,255);
+  soundDark = color(24,116,205);
+  soundHlight = color(0,191,255);
+  soundHdark = color(24,116,205);
+  sound1X = 600;
+  sound1Y = 400;
+  sound2X = 700;
+  sound2Y = 400;
+  sound1 = color(186,186,186);
+  sound1H = color(89,89,89);
+  sound2 = color(186,186,186);
+  sound2H = color(89,89,89);
+  
+    
+  // sound stuff
+  stroke(sound1);
+  fill(sound1H);
+  rect(sound1X, sound1Y, soundL, soundW);
+  stroke(sound2);
+  fill(sound2H);
+  rect(sound2X, sound2Y, soundL, soundW);
+  stroke(0);
+  fill(255,255,255);
+
 }
 
 void draw() {
@@ -240,6 +280,29 @@ void draw() {
       setupGame();
       setupPlay();
     }
+    
+    // sound stuff
+    if (picksound = true){
+      if (sound1Over = true){
+        fill(sound1);
+        stroke(sound1H);
+        rect(sound1X, sound1Y, soundL, soundW);
+        fill(sound2);
+        stroke(sound2H);
+        rect(sound2X, sound2Y, soundL, soundW);
+        fill(255);
+        
+      }
+      if (sound2Over = true){
+        fill(sound2);
+        stroke(sound2H);
+        rect(sound2X, sound2Y, soundL, soundW);
+        fill(sound1);
+        stroke(sound1H);
+        rect(sound1X, sound1Y, soundL, soundW);
+        fill(255);
+      }
+    }
   } 
   if (play) {
     scale(.25);
@@ -248,6 +311,7 @@ void draw() {
     text(str(count),236+(count*5),124);
     count++;
   }  
+  
 }
 
 void resetBooleans() {
@@ -256,6 +320,7 @@ void resetBooleans() {
     menuI = false;
     menuS = false;
     circlePlay = false;
+    picksound = false;
 }
 
 void resetBooleans2() {
@@ -287,6 +352,17 @@ void update(int x, int y) {
     resetBooleans2();
     circlePlayOver = true;    
   }     
+  
+  
+  // sound stuff
+  if (overRect(sound1X, sound1Y, soundL, soundW)){
+  sound1Over = true;
+  sound2Over = false;
+  }
+  if (overRect(sound2X, sound2Y, soundL, soundW)){
+    sound1Over = false;
+    sound2Over = true;
+  }
 }
 
 boolean overRect(int x, int y, int w, int h) {
@@ -463,6 +539,26 @@ void mousePressed(){
         }
       }
      setupPlay();
+  }
+  
+  
+  // sound stuff
+ 
+  
+  if (sound1Over == true || sound2Over == true){
+    picksound = true;
+    if (sound1Over = true){
+      sound1 = soundDark;
+      sound1H = soundHdark;
+      sound2 = soundLight;
+      sound2H = soundHlight;
+    }
+    if (sound2Over = true){
+      sound1 = soundLight;
+      sound1H = soundHlight;
+      sound2 = soundDark;
+      sound2H = soundHdark;
+    }  
   }
 }
 
