@@ -28,6 +28,7 @@ import ddf.minim.analysis.*;
 import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
 Minim minim;
+
 AudioPlayer soundMedieval, soundFunk;
 
 //int count = 0;
@@ -112,6 +113,31 @@ boolean sound2Over = false;
 boolean picksound = false;
 
 PFont myFont1, myFont2;
+PFont myFont3, myFont4;
+PImage imgBalloons, imgStar, imgSad;
+int pauser = 0;
+int counter = 0;
+
+int quitX = 1300;
+int quitY = 700;
+int quitL = 100;
+int quitH = 34;
+color quitC = color(255,204,255);
+boolean quitOver = false;
+
+int retryX = 500;
+int retryY = 700;
+int retryL = 125;
+int retryH = 50;
+color retryC = color(0,255,255);
+boolean retryOver = false;
+
+int closeX = 875;
+int closeY = 700;
+int closeL = 125;
+int closeH = 50;
+color closeC = color(255,153,204);
+boolean closeOver = false;
 
 
 void setupImgs() {
@@ -251,17 +277,22 @@ void draw() {
       //resetBooleans();
       inst = true;
       background(0,0,102);
+      
+      textAlign(CENTER);
+      textSize(30);
+      text("Instructions", 750-12, 115);
       textSize(20);
-      text("Instructions", 600, 100);
-      text("The objective of spider solitaire is to complete as many tableaus as possible.", 80, 130);
-      text("What that entails is to complete columns of cards in decreasing order of value, from King to Ace.", 80, 160);
-      text("You are allowed to move cards between columns, but the value of the card you are moving must be one less than that of the card", 80, 190);
-      text("you are moving to.", 80, 220);
-      text("You are allowed to move multiple cards in a columns, but the values of each card must be in appropriate descending order.", 80, 250);
-      text("If there are no possible moves left, you may click the stock of cards on the bottom left.", 80, 280);
-      text("The stock will put one card on each column.", 80, 310);
-      text("There are a limited number of cards in the stock, however, so be wise with your decisions.",80,340);
-      text("Have fun!",600,390); 
+      text("The objective of spider solitaire is to complete as many tableaus as possible.", 750-12, 180);
+      text("What that entails is to complete columns of cards in decreasing order of value, from King to Ace.", 750-12, 210);
+      text("You are allowed to move cards between columns, but the value of the card you are moving must be one less than that of the card", 750-12, 240);
+      text("you are moving to.", 750-12, 270);
+      text("You are allowed to move multiple cards in a columns, but the values of each card must be in appropriate descending order.", 750-12, 300);
+      text("If there are no possible moves left, you may click the stock of cards on the bottom left.", 750-12, 330);
+      text("The stock will put one card on each column.", 750-12, 360);
+      text("There are a limited number of cards in the stock, however, so be wise with your decisions.",750-12,390);
+      text("Have fun!",738,460);    
+      textAlign(LEFT);
+      
       menuC = color(255,0,0);
       menuX = 700-72;
       menuY = 550;
@@ -365,6 +396,10 @@ void draw() {
     scale(.25);
     setupPlay();
   }    
+  //gameover = true;
+  if (gameover == true){
+    winScreen();
+  }
 }
 
 void resetBooleans() {
@@ -405,6 +440,9 @@ void update(int x, int y) {
     resetBooleans2();
     circlePlayOver = true;    
   }     
+ /* if (overRect(quitX, quitY, quitL, quitH)) {
+    quitOver = true;
+  }*/
   
   
   // sound stuff
@@ -667,6 +705,15 @@ void mousePressed(){
         }
        setupPlay();
     }
+    if (overRect(quitX, quitY, quitL, quitH)) {
+      quitOver = true;
+    }
+    if(overRect(retryX, retryY, retryL, retryH)) {
+      retryOver = true;
+    }
+    if(overRect(closeX, closeY, closeL, closeH)) {
+      closeOver = true;
+    }
 
 }
 
@@ -744,8 +791,33 @@ void setupPlay() {
     textSize(100);
     text("That is not a legal move! Please refer to the instructions if you're not sure why.", 900, 2300);
   }
-
-  
+  scale(4);
+  fill(quitC);
+  rect(quitX, quitY, quitL, quitH);
+  fill(0);
+  textSize(20);
+  text("Quit", quitX+27, quitY+22); 
+  fill(255);
+  if (quitOver == true){
+    quitScreen(); 
+    if (retryOver == true){
+      scale(4);
+      setup();
+      resetBooleans();
+      resetBooleans2();
+    }
+  }
+  scale(.25);
+  if (retryOver == true){
+    scale(4);
+    setup();
+    resetBooleans();
+    resetBooleans2();
+  }
+  if (closeOver == true){
+    exit();
+  }
+    
 }
 
 void makeDeck(int startpos) {
@@ -890,6 +962,70 @@ boolean validMultipleMove(Node card) {
     tmp2 = tmp.getNext();
   }
   return true;
+}
+
+void winScreen(){
+  imgBalloons = loadImage("balloons2.jpg");
+  scale(1.175);
+  image(img2,0,0);
+  scale(1/1.175);
+  myFont3 = createFont("AR DELANEY", 150);
+  textFont(myFont3);
+  textAlign(CENTER);
+  text("CONGRATULATIONS!", 750, 250);
+  myFont4 = createFont("AR Darling", 125);
+  textFont(myFont4);
+  fill(0);
+  text("You won!!!", 750, 400);
+  fill(255);
+  textAlign(LEFT);
+  textFont(myFont1);
+  /* imgStar = loadImage("star.jpg");
+    scale(.1);
+    while (pauser < 10000){
+      pauser++;
+      if (pauser == 1000){
+        while (counter<1000000){
+          if (counter/2100030 == 0){
+            image(imgStar, random(10000),random(1000)+5000);
+            text(str(counter), counter, 80000);
+          }
+          counter++;
+        }
+      }
+    }
+  */
+  fill(retryC);
+  rect(retryX, retryY, retryL, retryH);
+  fill(closeC);
+  rect(closeX, closeY, closeL, closeH);
+  fill(0);
+  textSize(20);
+  text("Retry", retryX+34, retryY+30);
+  fill(255);
+  text("Close", closeX+34, closeY+30);
+}
+
+void quitScreen(){
+  background(0);
+  textAlign(CENTER);
+  textSize(200);
+  text("You lose", 750, 300);
+  fill(255);
+  tint(255);
+  imgSad = loadImage("sadface.jpg");
+  image(imgSad, 600,350); 
+  textAlign(LEFT);
+  
+  fill(retryC);
+  rect(retryX, retryY, retryL, retryH);
+  fill(closeC);
+  rect(closeX, closeY, closeL, closeH);
+  fill(0);
+  textSize(20);
+  text("Retry", retryX+34, retryY+30);
+  fill(255);
+  text("Close", closeX+34, closeY+30);
 }
   
 class Node {
@@ -1042,3 +1178,4 @@ one card (king?) appears at bottom of screen
 if nontinted card is removed, leaving tinted card on top of pile, tinted card untints
 
 */
+
