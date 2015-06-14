@@ -105,7 +105,7 @@ boolean tinted = false;
 // sound stuff
 int sound1X, sound1Y;
 int sound2X, sound2Y;
-int soundL = 100; 
+int soundL = 100+10; 
 int soundW = 33;
 color sound1, sound1H, sound2, sound2H;
 color soundLight, soundDark;
@@ -113,6 +113,8 @@ color soundHlight, soundHdark;
 boolean sound1Over = false;
 boolean sound2Over = false;
 boolean picksound = false;
+
+PFont myFont1, myFont2;
 
 
 void setupImgs() {
@@ -154,31 +156,44 @@ void setup1() {
   background(0,0,102);
   textSize(200);
   textAlign(CENTER);
-  text("SOLITAIRE", 750, 325);
+  myFont2 = createFont("Algerian",200);
+  textFont(myFont2);
+  text("SOLITAIRE", 750, 375);
+  myFont1 = createFont("Lucida Sans",200);    //Grande
+  textFont(myFont1);
+  //text("SOLITAIRE", 750, 500);
   textAlign(CENTER);
   textSize(75);
-  text("By Alice Xue & Emily Xu", 750, 700);
+  text("By Alice Xue & Emily Xu", 755, 700);
   
   //instructions & start buttons
   instC = color(255,0,0);
-  instX = 500;
+  instX = 500+40;
   instY = 500;
   instL = 200;
   instH = 50;
+  fill(255,255,110);
   rect(instX, instY, instL, instH);
+  fill(255);
   textSize(20);
   textAlign(LEFT);
-  text("Instructions", 500, 500);
+  fill(0);
+  text("Instructions", 585, 532);
+  fill(255);
   
   startC = color(255,0,0);
-  startX = 700;
+  startX = 700+40;
   startY = 500;
   startL = 200;
   startH = 50;
+  fill(110,255,110);
   rect(startX, startY, startL, startH);
+  fill(255);
   textSize(20);
   textAlign(LEFT);
-  text("Start", 700, 500); 
+  fill(0);
+  text("Start", 815, 532); 
+  fill(255);
   
   // load card images continued
   img1 = loadImage("1.png");
@@ -204,9 +219,9 @@ void setup1() {
   soundDark = color(24,116,205);
   soundHlight = color(0,191,255);
   soundHdark = color(24,116,205);
-  sound1X = 600;
+  sound1X = 600+37-10;
   sound1Y = 100;
-  sound2X = 700;
+  sound2X = 700+37;
   sound2Y = 100;
   sound1 = color(186,186,186);
   sound1H = color(89,89,89);
@@ -223,12 +238,13 @@ void setup1() {
   rect(sound2X, sound2Y, soundL, soundW);
   stroke(0);
   fill(255,255,255);
-  text("Pick your music:", 400,122);
-  text("Medievally   Funky", 600,90);
+  text("Pick your music:", 658,85);
+  text("Medievally", 632,124);
+  text("Funky", 763,124);
   
   minim = new Minim(this);
-  soundMedieval = minim.loadFile("MedievalMusic.wav");
-  soundFunk = minim.loadFile("FunkMusic.wav");
+  soundMedieval = minim.loadFile("MedievalMusic.mp3");
+  soundFunk = minim.loadFile("FunkMusic.mp3");
 }
 
 void draw() {
@@ -250,35 +266,43 @@ void draw() {
       text("There are a limited number of cards in the stock, however, so be wise with your decisions.",80,340);
       text("Have fun!",600,390); 
       menuC = color(255,0,0);
-      menuX = 700;
-      menuY = 500;
-      menuL = 200;
+      menuX = 700-72;
+      menuY = 550;
+      menuL = 200+20;
       menuH = 50;
+      fill(255,110,110);
       rect(menuX, menuY, menuL, menuH);
+      fill(255);
       textSize(20);
-      text("Go back to the menu", 700, 500);
+      text("Go back to the menu", 638, 583);
     }
     if (start == true) {
       //resetBooleans();
       start = true;
       background(0,0,102);
       textSize(20);
-      text("Start", 700, 300);
+      text("Start", 712, 348);
       circlePlayC = color(255,0,0);
-      circlePlayX = 700;
+      circlePlayX = 733;
       circlePlayY = 400;
       circlePlaySize = 100;
+      fill(110,255,110);
       ellipse(circlePlayX, circlePlayY, circlePlaySize, circlePlaySize);
+      fill(255);
       textSize(20);
-      text("PLAY!",600,400);
+      fill(0);
+      text("PLAY!",675+33,410);
+      fill(255);
       menuC = color(255,0,0);
-      menuX = 700;
-      menuY = 500;
-      menuL = 200;
+      menuX = 700-72;
+      menuY = 550;
+      menuL = 200+20;
       menuH = 50;
+      fill(255,110,110);
       rect(menuX, menuY, menuL, menuH);
+      fill(255);
       textSize(20);
-      text("Go back to the menu", 700, 500);
+      text("Go back to the menu", 638, 583);
     }
     if (menuI == true) {
       //resetBooleans();
@@ -313,6 +337,11 @@ void draw() {
         rect(sound2X, sound2Y, soundL, soundW);
         fill(255);
         stroke(0);
+        fill(0);
+        text("Medievally", 632,124);
+        fill(255);
+        text("Funky", 763,124);
+        fill(255);
       }
       if (sound2Over == true){
         //fill(sound2);
@@ -327,6 +356,11 @@ void draw() {
         rect(sound1X, sound1Y, soundL, soundW);
         fill(255);
         stroke(0);
+        fill(255);
+        text("Medievally", 632,124);
+        fill(20);
+        text("Funky", 763,124);
+        fill(255);
       }
     }
   } 
@@ -580,10 +614,10 @@ void mousePressed(){
       sound2H = soundHlight;
       
     
-      //soundFunk = minim.loadFile("FunkMusic.wav");
+      //soundFunk = minim.loadFile("FunkMusic.mp3");
       soundFunk.close();
       soundMedieval.close();
-      soundMedieval = minim.loadFile("MedievalMusic.wav");
+      soundMedieval = minim.loadFile("MedievalMusic.mp3");
       soundMedieval.play();
       //soundFunk.close();
   }
@@ -597,10 +631,10 @@ void mousePressed(){
       sound1H = soundHlight;
       
       
-      //soundMedieval = minim.loadFile("MedievalMusic.wav");
+      //soundMedieval = minim.loadFile("MedievalMusic.mp3");
       soundMedieval.close();
       soundFunk.close();
-      soundFunk = minim.loadFile("FunkMusic.wav");
+      soundFunk = minim.loadFile("FunkMusic.mp3");
       soundFunk.play();
       //soundMedieval.close();
   }
@@ -623,7 +657,7 @@ void mousePressed(){
 }
 
 void setupPlay() {
-  background(51,153,0);
+  background(34,139,34);  //(0,128,0);   //(51,153,0);
   int posY = 150;
   for (int i = 0; i<tableaus.length; i++) {
     Node tmp = tableaus[i].getFirst();
