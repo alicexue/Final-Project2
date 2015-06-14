@@ -39,4 +39,4 @@ Spider Solitaire - Emily Xu and Alice Xue
 6/13/15: able to move columns now but there's an annoying bug to fix. added some instructions (AX)
         finished sound and buttons, worked on colors and placement (EX)
 
-6/14/15:
+6/14/15: able to move columns successfully now. checks for completed columns and if game is over. added points system (AX)
