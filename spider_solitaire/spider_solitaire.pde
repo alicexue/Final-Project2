@@ -1,10 +1,6 @@
 // card images https://code.google.com/p/vector-playing-cards/
 // http://www.rgbhex.com/  COLORS
 
-// need to fix "go back to menu" function
-// we need to figure out how the point system works
-// need to fix glitch where the last card in tableau disappears 
-
 // for the initial setup
 // the tableaus will be in an array
 // the piles of cards in the tableaus will be linked lists of nodes
@@ -34,8 +30,9 @@ import ddf.minim.effects.*;
 Minim minim;
 AudioPlayer soundMedieval, soundFunk;
 
-
-int count = 0;
+//int count = 0;
+int points = 500;
+int numCompletedTableaus = 0;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +46,7 @@ PImage[] imgs = new PImage[14];
 int[] columns = new int[10];
 
 boolean illegalmove = false;
-
+boolean gameover = false;
 ArrayList<Node> upCards = new ArrayList<Node>();
 Node tmpCard;
 
@@ -367,11 +364,7 @@ void draw() {
   if (play) {
     scale(.25);
     setupPlay();
-    textSize(235);
-    text(str(count),236+(count*5),124);
-    count++;
-  }  
-  
+  }    
 }
 
 void resetBooleans() {
@@ -467,6 +460,11 @@ Node overSpefCardT() {
   for (int i = 0; i<columns.length; i++) {
     if (mouseX*4 >= columns[i] && mouseX*4 <= columns[i]+500) 
       t = i;
+    if (tableaus[i].getFirst() == null) {
+      if (overCard(columns[i],150)) {
+        return new Node(-1);
+      }
+    }
   } 
   if (t!=-1) {
     Node n = tableaus[t].getFirst();
@@ -488,51 +486,96 @@ Node overSpefCardT() {
       
 
 boolean overPartCard(int x, int y) {
-  if (mouseX*4 >= x && mouseX*4 <= x+500 && mouseY*4 >= y && mouseY <= y+120) 
+  if (mouseX*4 >= x && mouseX*4 <= x+500 && mouseY*4 >= y && mouseY < y+120) 
     return true;
   else 
     return false;
 }
 
 void mousePressed(){ 
-  if (rectInstOver == true){
-    resetBooleans();
-    inst = true;
+  if (!play) {
+    if (rectInstOver == true){
+      resetBooleans();
+      inst = true;
+    }
+    if (rectStartOver == true) {
+      resetBooleans();
+      start = true;
+    }
+    if (rectMenuSOver == true) {
+      resetBooleans();
+      menuS = true;
+    }
+    if (rectMenuIOver == true) {
+      resetBooleans();
+      menuI = true;
+    }
+    if (circlePlayOver == true) {
+      resetBooleans();
+      circlePlay = true;
+    }  
+    
+    
+    // sound stuff
+   
+    if (overRect(sound1X, sound1Y, soundL, soundW) == true){
+        picksound = true;
+        sound1Over = true;
+        sound2Over = false;
+        sound1 = soundDark;
+        sound1H = soundHdark;
+        sound2 = soundLight;
+        sound2H = soundHlight;
+        
+      
+        //soundFunk = minim.loadFile("FunkMusic.mp3");
+        soundFunk.close();
+        soundMedieval.close();
+        soundMedieval = minim.loadFile("MedievalMusic.mp3");
+        soundMedieval.play();
+        //soundFunk.close();
+    }
+    if (overRect(sound2X, sound2Y, soundL, soundW) == true){
+        picksound = true;
+        sound2Over = true;
+        sound1Over = false;
+        sound2 = soundDark;
+        sound2H = soundHdark;
+        sound1 = soundLight;
+        sound1H = soundHlight;
+        
+        
+        //soundMedieval = minim.loadFile("MedievalMusic.mp3");
+        soundMedieval.close();
+        soundFunk.close();
+        soundFunk = minim.loadFile("FunkMusic.mp3");
+        soundFunk.play();
+        //soundMedieval.close();
+    }
+      
+   /* if (sound1Over == true || sound2Over == true){
+      picksound = true;
+      if (sound1Over == true){
+        sound1 = soundDark;
+        sound1H = soundHdark;
+        sound2 = soundLight;
+        sound2H = soundHlight;
+      }
+      if (sound2Over == true){
+        sound1 = soundLight;
+        sound1H = soundHlight;
+        sound2 = soundDark;
+        sound2H = soundHdark;
+      }  
+    }*/
   }
-  if (rectStartOver == true) {
-    resetBooleans();
-    start = true;
-  }
-  if (rectMenuSOver == true) {
-    resetBooleans();
-    menuS = true;
-  }
-  if (rectMenuIOver == true) {
-    resetBooleans();
-    menuI = true;
-  }
-  if (circlePlayOver == true) {
-    resetBooleans();
-    circlePlay = true;
-  }  
   if (play) {          
     if (overCard(column1, 2200) && !stock.isEmpty()) {
       addFromStock();
       illegalmove = false; 
+      points--;
     } else {      
-      int tmpX = 0;
-      int tmpY = 0;
-      Node tmp = null;
-      for (int i = 0; i<upCards.size(); i++) {
-        tmp = upCards.get(i);
-        tmpX = tmp.getX();
-        tmpY = tmp.getY();
-        if (overCard(tmpX,tmpY))
-          break;
-      }    
-      
-      tmp = overSpefCardT();
-      
+      Node tmp = overSpefCardT();      
       if (overSpefCard()!=null) {
         if (!tinted) {
           tmpCard = tmp;
@@ -542,14 +585,12 @@ void mousePressed(){
           setupPlay();
         } else if (validMove(tmpCard,tmp)){
           Node tmp1 = tmp;
+          Node check = tmpCard;
           int numT = tmpCard.getT();
           int numTmp = tmp.getT();
-          tmpCard.setTinted(false);       
-          // problem is that when multiple cards are moved, not all the cards are moved, just the first one
-          // what doesn't make sense is that tmpCard should be pointed to its next card (and this is shown in the setupPlay display)
-          // :( :( :(           
-          int c = 1;
-          tableaus[numTmp].addN(tmpCard);          
+          tmpCard.setTinted(false);            
+          int c = 1;       
+          Node tmpCard2 = tmpCard; 
           while (tmpCard.getNext()!=null) {
             tmpCard = tmpCard.getNext();
             c++;
@@ -557,13 +598,23 @@ void mousePressed(){
           while (c>0) {
             tableaus[numT].removeL();
             c--;
-          }          
+          }    
+          int checkNum = check.getValue();
+          int tmpCardNum = tmpCard.getValue();
+          while (checkNum!=tmpCardNum) {
+            Node n = new Node(checkNum);
+            n.setFace(true);
+            tableaus[numTmp].addN(n);
+            checkNum--;
+          }   
+          tableaus[numTmp].addN(tmpCard);
           if (tableaus[numT].getFirst()!=null) {
             tableaus[numT].getLast().setFace(true);         
             upCards.add(tableaus[numT].getLast());
           }         
-          tmpCard = null;
           tinted = false;
+          illegalmove = false;
+          points--;
           setupPlay();
         } else if (!validMove(tmpCard,tmp)) {
           illegalmove = true;
@@ -571,93 +622,81 @@ void mousePressed(){
             tmpCard.setTinted(false);
             tinted = false;
           }
-          tmpCard = null;
         }
-     } else {
-          for (int i = 0; i<columns.length; i++) {
-            if (tableaus[i].getFirst() == null) {
-              if (overCard(columns[i],150)) {
-                tableaus[i].addN(tmpCard);
+       } else if (overSpefCardT()!=null && overSpefCardT().getValue()==-1){
+            int index = -1;
+            for (int i = 0; i<columns.length; i++) {
+              if (tableaus[i].getFirst() == null) {
+                if (overCard(columns[i],150)) {
+                  index = i;
+                }
               }
             }
-          }
-          if (tmpCard!=null) {
-            Node indextmp = tmpCard;
-            int numT = tmpCard.getT();
-            while (indextmp!=null) {
-              tableaus[numT].removeL();
-              indextmp = indextmp.getNext();
-            }         
-            if (tableaus[numT].getFirst()!=null) {
-              tableaus[numT].getLast().setFace(true);         
-              upCards.add(tableaus[numT].getLast());
-            } 
-            tmpCard.setTinted(false);
+            if (tmpCard!=null) {
+              Node check = tmpCard;
+              int numT = tmpCard.getT();
+              tmpCard.setTinted(false);            
+              int c = 1;        
+              Node tmpCard2 = tmpCard; 
+              while (tmpCard.getNext()!=null) {
+                tmpCard = tmpCard.getNext();
+                c++;
+              }   
+              while (c>0) {
+                tableaus[numT].removeL();
+                c--;
+              }    
+              int checkNum = check.getValue();
+              int tmpCardNum = tmpCard.getValue();
+              while (checkNum!=tmpCardNum) {
+                Node n = new Node(checkNum);
+                n.setFace(true);
+                tableaus[index].addN(n);
+                checkNum--;
+              }   
+              tableaus[index].addN(tmpCard); // bug??
+              if (tableaus[numT].getFirst()!=null) {
+                tableaus[numT].getLast().setFace(true);         
+                upCards.add(tableaus[numT].getLast());
+              }   
+            }
+            points--;
             tmpCard = null;
-            tinted = false;
+            illegalmove = false;
           }
         }
-      }
-     setupPlay();
-  }
-  
-  
-  // sound stuff
- 
-  if (overRect(sound1X, sound1Y, soundL, soundW) == true){
-      picksound = true;
-      sound1Over = true;
-      sound2Over = false;
-      sound1 = soundDark;
-      sound1H = soundHdark;
-      sound2 = soundLight;
-      sound2H = soundHlight;
-      
-    
-      //soundFunk = minim.loadFile("FunkMusic.mp3");
-      soundFunk.close();
-      soundMedieval.close();
-      soundMedieval = minim.loadFile("MedievalMusic.mp3");
-      soundMedieval.play();
-      //soundFunk.close();
-  }
-  if (overRect(sound2X, sound2Y, soundL, soundW) == true){
-      picksound = true;
-      sound2Over = true;
-      sound1Over = false;
-      sound2 = soundDark;
-      sound2H = soundHdark;
-      sound1 = soundLight;
-      sound1H = soundHlight;
-      
-      
-      //soundMedieval = minim.loadFile("MedievalMusic.mp3");
-      soundMedieval.close();
-      soundFunk.close();
-      soundFunk = minim.loadFile("FunkMusic.mp3");
-      soundFunk.play();
-      //soundMedieval.close();
-  }
-    
- /* if (sound1Over == true || sound2Over == true){
-    picksound = true;
-    if (sound1Over == true){
-      sound1 = soundDark;
-      sound1H = soundHdark;
-      sound2 = soundLight;
-      sound2H = soundHlight;
+       setupPlay();
     }
-    if (sound2Over == true){
-      sound1 = soundLight;
-      sound1H = soundHlight;
-      sound2 = soundDark;
-      sound2H = soundHdark;
-    }  
-  }*/
+
 }
 
-void setupPlay() {
+void setupPlay() {   
+  if (completeTableau()!=-1) {
+    int i = completeTableau();
+    Node tmp = tableaus[i].getFirst();
+    while (!tmp.getNext().faceUp()) {
+      tmp = tmp.getNext();
+    }
+    tmp.setNext(null);
+    if (tableaus[i].getFirst()!=null) 
+      tableaus[i].getLast().setFace(true);
+    numCompletedTableaus++;
+    points+=(numCompletedTableaus*100);
+  }  
+  /*--------------------------------------------------------------- check if game is finished ---------------------- */
+  boolean finished = true;
+  if (numCompletedTableaus == 8) {
+    gameover = true;
+    return;
+  }
+
+
+
+  
   background(34,139,34);  //(0,128,0);   //(51,153,0);
+  textSize(100);
+  fill(255,204,0);
+  text("Score: "+str(points),100,100); 
   int posY = 150;
   for (int i = 0; i<tableaus.length; i++) {
     Node tmp = tableaus[i].getFirst();
@@ -671,10 +710,6 @@ void setupPlay() {
       PImage tmpI = imgs[tmp.getValue()];
       int c = columns[i];
       image(tmpI,c,posY); 
-        if (tmp.getNext()==null) {
-          textSize(100);
-          text("next null",tmp.getX(),tmp.getY());
-        }   
       if (!tmp.faceUp()){
         noTint();
       }
@@ -704,22 +739,13 @@ void setupPlay() {
   text("testing^", 160, 1800);
   noFill();
   */
- /* --------------------------------------------------------testing what the tmp card is ---------------------------------- */  
-  if (tmpCard!=null) {
-    noTint();
-    Node tmp = tmpCard;
-    int c = 100;
-    while (tmp!=null) {  
-      image(imgs[tmp.getValue()],2000+c,2000);
-      tmp = tmp.getNext();
-      c+=100;
-    }  
-  }  
     
   if (illegalmove) {
     textSize(100);
-    text("That is not a legal move! Please refer to the instructions if you're not sure why.", 800, 2300);
+    text("That is not a legal move! Please refer to the instructions if you're not sure why.", 900, 2300);
   }
+
+  
 }
 
 void makeDeck(int startpos) {
@@ -811,19 +837,26 @@ void addFromStock() {
 }
 
 
-// checks if face up columns are complete
+// checks if any columns are complete
 // returns -1 if no tableaus are complete
 // returns index of tableau if there is one complete
 int completeTableau() {
   int tableauIndex = -1;
   for (int i = 0; i < tableaus.length; i++) {
-    Node tmp = tableaus[i].getFirst();
-    while (tmp != null) {
-      if (tmp.faceUp() == true) {
-         tableauIndex = i;
+    Node tmp = tableaus[i].getLast();
+    if (tmp!=null && tmp.getValue()==1) {
+      Node tmp1 = tableaus[i].getFirst();
+      Node king = null;
+      while (tmp1 != null) {
+        if (tmp1.faceUp() == true && tmp1.getValue() == 13) {
+            king = tmp1;
+        }
+        tmp1 = tmp1.getNext();
       }
-      if (tableauIndex != -1) 
-        break;
+      if (king!=null) {
+        if (validMultipleMove(king)) 
+          tableauIndex = i;
+      }
     }
   }
   return tableauIndex;
@@ -831,10 +864,14 @@ int completeTableau() {
 
 boolean validMove(Node card1, Node card2) {
   // move card1 to card 2
-  if (card1==null || card1 == null) 
+  if (card1 == null) 
     return false;
-  if (card1.getValue()+1 == card2.getValue()) 
-    return true;   
+  if (card2 == null)
+    return true;
+  if (validMultipleMove(card1)) {
+    if (card1.getValue()+1 == card2.getValue()) 
+      return true;   
+  }
   return false;
 }
 
