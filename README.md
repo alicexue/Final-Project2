@@ -37,3 +37,4 @@ Spider Solitaire - Emily Xu and Alice Xue
         worked on some glitches with moving cards and adding from stock (AX)
 
 6/13/15: able to move columns now but there's an annoying bug to fix. added some instructions (AX)
+        finished sound and buttons, worked on colors and placement (EX)
