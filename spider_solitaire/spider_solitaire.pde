@@ -31,9 +31,8 @@ Minim minim;
 
 AudioPlayer soundMedieval, soundFunk;
 
-//int count = 0;
-int points = 500;
-int numCompletedTableaus = 0;
+int points;
+int numCompletedTableaus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -95,8 +94,6 @@ boolean rectMenuSOver = false;
 boolean rectMenuIOver = false;
 // play button
 boolean circlePlayOver = false;
-
-boolean clicked = false;
 
 boolean tinted = false;
 
@@ -175,6 +172,8 @@ void setup() {
 }
 
 void setup1() {
+  points = 500;
+  numCompletedTableaus = 0;
   size(1500, 800);
   background(0,0,102);
   textSize(200);
@@ -290,7 +289,9 @@ void draw() {
       text("If there are no possible moves left, you may click the stock of cards on the bottom left.", 750-12, 330);
       text("The stock will put one card on each column.", 750-12, 360);
       text("There are a limited number of cards in the stock, however, so be wise with your decisions.",750-12,390);
-      text("Have fun!",738,460);    
+      text("You will start off with 500 points. For each move you make, 1 point will be deducted.",750-12,420);
+      text("If you complete a column, you will be rewarded with 100 * # of columns you have already completed.",750-12,450);
+      text("Have fun!",738,480);    
       textAlign(LEFT);
       
       menuC = color(255,0,0);
@@ -487,7 +488,7 @@ Node overSpefCard() {
       Node tmp = upCards.get(i);
       tmpX = tmp.getX();
       tmpY = tmp.getY();          
-      if (mouseX*4 >= tmpX && mouseX*4 <= (tmpX+500)/1 && mouseY*4 >= tmpY && mouseY*4 <= (tmpY+760)/1) 
+      if (mouseX*4 >= tmpX && mouseX*4 <= tmpX+500 && mouseY*4 >= tmpY && mouseY*4 <= tmpY+760) 
         return tmp;
     }
     return null;
@@ -507,7 +508,7 @@ Node overSpefCardT() {
   if (t!=-1) {
     Node n = tableaus[t].getFirst();
     Node m = tableaus[t].getLast();
-    if (overCard(m.getX(),m.getY())) 
+    if (overCard(m.getX(),m.getY()))    
       return m;
     while (n!=null){
       Node tmp = n.getNext();
@@ -614,10 +615,14 @@ void mousePressed(){
       points--;
     } else {      
       Node tmp = overSpefCardT();      
-      if (overSpefCard()!=null) {
+      if (overSpefCard()!=null && overSpefCardT().getValue()!=-1) {
         if (!tinted) {
           tmpCard = tmp;
           tmp.setTinted(true);
+          while (tmp.getNext()!=null) {
+            tmp.getNext().setTinted(true);
+            tmp = tmp.getNext();
+          }
           tinted = true;
           illegalmove = false;
           setupPlay();
@@ -645,6 +650,7 @@ void mousePressed(){
             tableaus[numTmp].addN(n);
             checkNum--;
           }   
+          tmpCard.setTinted(false);
           tableaus[numTmp].addN(tmpCard);
           if (tableaus[numT].getFirst()!=null) {
             tableaus[numT].getLast().setFace(true);         
@@ -656,10 +662,15 @@ void mousePressed(){
           setupPlay();
         } else if (!validMove(tmpCard,tmp)) {
           illegalmove = true;
-          if (tmpCard!=null) { 
-            tmpCard.setTinted(false);
-            tinted = false;
+          if (tmpCard!=null) {
+             tmpCard.setTinted(false);
+             while (tmpCard.getNext()!=null) {
+               tmpCard.getNext().setTinted(false);
+               tmpCard = tmpCard.getNext();
+             } 
           }
+          tinted = false;
+          setupPlay();
         }
        } else if (overSpefCardT()!=null && overSpefCardT().getValue()==-1){
             int index = -1;
@@ -692,6 +703,7 @@ void mousePressed(){
                 tableaus[index].addN(n);
                 checkNum--;
               }   
+              tmpCard.setTinted(false);
               tableaus[index].addN(tmpCard); // bug??
               if (tableaus[numT].getFirst()!=null) {
                 tableaus[numT].getLast().setFace(true);         
@@ -700,7 +712,9 @@ void mousePressed(){
             }
             points--;
             tmpCard = null;
+            tinted = false;
             illegalmove = false;
+            setupPlay();
           }
         }
        setupPlay();
@@ -725,21 +739,18 @@ void setupPlay() {
       tmp = tmp.getNext();
     }
     tmp.setNext(null);
+    if (tmp.getValue()==13) 
+      tmp = null;
     if (tableaus[i].getFirst()!=null) 
       tableaus[i].getLast().setFace(true);
     numCompletedTableaus++;
     points+=(numCompletedTableaus*100);
   }  
-  /*--------------------------------------------------------------- check if game is finished ---------------------- */
-  boolean finished = true;
   if (numCompletedTableaus == 8) {
     gameover = true;
     return;
   }
 
-
-
-  
   background(34,139,34);  //(0,128,0);   //(51,153,0);
   textSize(100);
   fill(255,204,0);
@@ -755,11 +766,15 @@ void setupPlay() {
         tint(0, 153, 204);
       }
       PImage tmpI = imgs[tmp.getValue()];
-      int c = columns[i];
-      image(tmpI,c,posY); 
-      if (!tmp.faceUp()){
-        noTint();
+      int c = columns[i];      
+      image(tmpI,c,posY);
+      if (tmp!=tableaus[i].getFirst() && tmp.getNext()!=null && tmp.faceUp()==false) {
+        strokeCap(ROUND);
+        strokeWeight(2);
+        stroke(255);
+        line(c,posY-1,c+498,posY);
       }
+      noTint();
       tmp.setX(c);
       tmp.setY(posY);
       tmp.setT(i);
@@ -789,7 +804,7 @@ void setupPlay() {
     
   if (illegalmove) {
     textSize(100);
-    text("That is not a legal move! Please refer to the instructions if you're not sure why.", 900, 2300);
+    text("That is not a legal move! Please refer to the instructions if you're not sure why.", 1000, 100);
   }
   scale(4);
   fill(quitC);
@@ -802,17 +817,17 @@ void setupPlay() {
     quitScreen(); 
     if (retryOver == true){
       scale(4);
-      setup();
       resetBooleans();
       resetBooleans2();
+      setup1();
     }
   }
   scale(.25);
   if (retryOver == true){
     scale(4);
-    setup();
     resetBooleans();
     resetBooleans2();
+    setup1();
   }
   if (closeOver == true){
     exit();
