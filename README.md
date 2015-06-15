@@ -40,3 +40,4 @@ Spider Solitaire - Emily Xu and Alice Xue
         finished sound and buttons, worked on colors and placement (EX)
 
 6/14/15: able to move columns successfully now. checks for completed columns and if game is over. added points system (AX)
+        made exit and retry buttons, worked on winning and losing screens (EX)
