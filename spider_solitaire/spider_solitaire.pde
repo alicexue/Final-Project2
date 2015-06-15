@@ -514,14 +514,17 @@ Node overSpefCardT() {
     Node m = tableaus[t].getLast();
     if (overCard(m.getX(),m.getY()))    
       return m;
-    while (n!=null){
-      Node tmp = n.getNext();
-      if (tmp!=null) {
-        if (n.faceUp() == true && overPartCard(mouseX*4, mouseY*4) && !overCard(tmp.getX(),tmp.getY())) {
-          return n;
+    Node tmpN = n;
+    while (tmpN.getNext()!=null){
+      Node tmp = tmpN.getNext();
+      if (tmpN.getNext()!=null) {
+        if (tmpN.faceUp() == true && overPartCard(tmpN.getX(),tmpN.getY()) && !overCard(tmp.getX(),tmp.getY())) {
+          return tmpN;
         }
+      } else if (tmpN.faceUp() == true && overPartCard(tmpN.getX(),tmpN.getY())) {
+        return tmpN;
       }
-      n = n.getNext();
+      tmpN = tmpN.getNext();
     }
   }
   return null;
@@ -529,9 +532,9 @@ Node overSpefCardT() {
       
 
 boolean overPartCard(int x, int y) {
-  if (mouseX*4 >= x && mouseX*4 <= x+500 && mouseY*4 >= y && mouseY < y+120) 
-    return true;
-  else 
+    if (mouseX*4 >= x && mouseX*4 <= x+500 && mouseY*4 >= y && mouseY < y+120) {
+      return true;
+    }
     return false;
 }
 
@@ -716,13 +719,13 @@ void mousePressed(){
               }   
             }
             points--;
-            tmpCard = null;
+            //tmpCard = null;
             tinted = false;
             illegalmove = false;
             setupPlay();
           }
         }
-       setupPlay();
+       //setupPlay();
     }
     if (overRect(quitX, quitY, quitL, quitH)) {
       quitOver = true;
@@ -744,8 +747,8 @@ void setupPlay() {
       tmp = tmp.getNext();
     }
     tmp.setNext(null);
-    if (tmp.getValue()==13) 
-      tmp = null;
+    if (tmp.getNext()==null && tableaus[i].getFirst().getValue()==13) 
+      tableaus[i]=null;
     if (tableaus[i].getFirst()!=null) 
       tableaus[i].getLast().setFace(true);
     numCompletedTableaus++;
