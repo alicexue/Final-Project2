@@ -1,7 +1,8 @@
 # Final-Project2
-Spider Solitaire - Emily Xu and Alice Xue
+Spider Solitaire - Emily Xu and Alice Xue /n
 To run, click the "spider_solitaire" folder and open the "spider_solitair.pde" file. Enjoy!
 
+/n
 
 Log:
 
