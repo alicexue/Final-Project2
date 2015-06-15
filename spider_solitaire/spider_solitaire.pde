@@ -135,6 +135,7 @@ int closeL = 125;
 int closeH = 50;
 color closeC = color(255,153,204);
 boolean closeOver = false;
+int clicksleft = 5;
 
 
 void setupImgs() {
@@ -418,6 +419,9 @@ void resetBooleans2() {
     rectMenuSOver = false;
     rectMenuIOver = false;
     circlePlayOver = false;  
+    quitOver = false;
+    retryOver = false;
+    closeOver = false;
 }
 
 void update(int x, int y) {
@@ -613,6 +617,7 @@ void mousePressed(){
       addFromStock();
       illegalmove = false; 
       points--;
+      clicksleft--;
     } else {      
       Node tmp = overSpefCardT();      
       if (overSpefCard()!=null && overSpefCardT().getValue()!=-1) {
@@ -755,6 +760,7 @@ void setupPlay() {
   textSize(100);
   fill(255,204,0);
   text("Score: "+str(points),100,100); 
+  text(str(clicksleft), 380,3000);
   int posY = 150;
   for (int i = 0; i<tableaus.length; i++) {
     Node tmp = tableaus[i].getFirst();
@@ -817,17 +823,21 @@ void setupPlay() {
     quitScreen(); 
     if (retryOver == true){
       scale(4);
+      points = 500;
+      clicksleft = 5;
       resetBooleans();
       resetBooleans2();
-      setup1();
+      setup();
     }
   }
   scale(.25);
   if (retryOver == true){
     scale(4);
+    points = 500;
+    clicksleft = 5;
     resetBooleans();
     resetBooleans2();
-    setup1();
+    setup();
   }
   if (closeOver == true){
     exit();
