@@ -1,5 +1,9 @@
 # Final-Project2
 Spider Solitaire - Emily Xu and Alice Xue
+To run, click the "spider_solitaire" folder and open the "spider_solitair.pde" file. Enjoy!
+
+
+Log:
 
 5/24/15: added setup for the game to lay out the cards in tableaus and add to the stock. created nodes(cards) and linked list (AX)
 
