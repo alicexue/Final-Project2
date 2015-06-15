@@ -1001,7 +1001,7 @@ void winScreen(){
   myFont4 = createFont("AR Darling", 125);
   textFont(myFont4);
   fill(0);
-  text("You won!!!", 750, 400);
+  text("You win!!!", 750, 400);
   fill(255);
   textAlign(LEFT);
   textFont(myFont1);
